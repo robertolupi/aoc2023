@@ -1,0 +1,124 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 13.3' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[      3782,        114]
+NotebookOptionsPosition[      2564,         84]
+NotebookOutlinePosition[      2957,        100]
+CellTagsIndexPosition[      2914,         97]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["Advent of Code 2023", "Title",
+ CellChangeTimes->{{3.910521052743752*^9, 3.91052106292288*^9}, {
+  3.910521103943742*^9, 
+  3.910521104532507*^9}},ExpressionUUID->"6dccc01c-a83d-4134-90c6-\
+ac4427a103a5"],
+
+Cell[CellGroupData[{
+
+Cell["Day X", "Chapter",
+ CellChangeTimes->{{3.910521110676861*^9, 3.910521114316334*^9}, {
+  3.910521461945562*^9, 
+  3.91052146777507*^9}},ExpressionUUID->"c0913806-a5fa-4455-9c0c-\
+918ff01325ba"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"SetDirectory", "[", 
+  RowBox[{"NotebookDirectory", "[", "]"}], "]"}]], "Input",
+ CellChangeTimes->{{3.910518362881239*^9, 3.910518367065096*^9}},
+ CellLabel->"In[4]:=",ExpressionUUID->"7aaeb906-6cd3-488f-b768-8ce106d6f3b2"],
+
+Cell[BoxData["\<\"/home/rlupi/src/aoc2023\"\>"], "Output",
+ CellChangeTimes->{3.9105183687652473`*^9},
+ CellLabel->"Out[4]=",ExpressionUUID->"60864682-b47d-4617-870f-2d2c1f32db5e"]
+}, Open  ]],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"input", "=", 
+   RowBox[{"Import", "[", 
+    RowBox[{"\"\<dX-p1-input.txt\>\"", ",", "\"\<Lines\>\""}], "]"}]}], 
+  ";"}]], "Input",
+ CellChangeTimes->{{3.910518394919921*^9, 3.910518430740594*^9}, {
+  3.910521470715783*^9, 
+  3.910521478405547*^9}},ExpressionUUID->"4b50a6d2-e075-4ea0-9dbd-\
+35c469214eca"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Length", "[", "input", "]"}]], "Input",
+ CellChangeTimes->{{3.9105184346265917`*^9, 3.910518436609522*^9}},
+ CellLabel->"In[8]:=",ExpressionUUID->"dd1128a9-7eb8-4c33-9a00-d7c5a454194b"],
+
+Cell[BoxData["1000"], "Output",
+ CellChangeTimes->{3.910518436979945*^9},
+ CellLabel->"Out[8]=",ExpressionUUID->"412fc9e8-6fb5-47a4-ac08-de9b8344b9a8"]
+}, Open  ]],
+
+Cell["Part 1", "Section",
+ CellChangeTimes->{{3.910521070892994*^9, 
+  3.910521073999048*^9}},ExpressionUUID->"21f2fc5a-7604-4c52-871e-\
+a5cda35999af"],
+
+Cell["Part 2", "Section",
+ CellChangeTimes->{{3.9105210783162394`*^9, 
+  3.910521080450756*^9}},ExpressionUUID->"b1ab8cc9-ff14-4012-8529-\
+8d2128a68b64"]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{1152, 1232.25},
+WindowMargins->{{Automatic, 0}, {Automatic, 0}},
+FrontEndVersion->"13.3 for Linux x86 (64-bit) (July 24, 2023)",
+StyleDefinitions->"Default.nb",
+ExpressionUUID->"89c20ec2-7273-4c3c-a09a-04e2a4554cdb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 210, 4, 98, "Title",ExpressionUUID->"6dccc01c-a83d-4134-90c6-ac4427a103a5"],
+Cell[CellGroupData[{
+Cell[815, 30, 198, 4, 69, "Chapter",ExpressionUUID->"c0913806-a5fa-4455-9c0c-918ff01325ba"],
+Cell[CellGroupData[{
+Cell[1038, 38, 248, 4, 29, "Input",ExpressionUUID->"7aaeb906-6cd3-488f-b768-8ce106d6f3b2"],
+Cell[1289, 44, 180, 2, 33, "Output",ExpressionUUID->"60864682-b47d-4617-870f-2d2c1f32db5e"]
+}, Open  ]],
+Cell[1484, 49, 342, 9, 29, "Input",ExpressionUUID->"4b50a6d2-e075-4ea0-9dbd-35c469214eca"],
+Cell[CellGroupData[{
+Cell[1851, 62, 209, 3, 29, "Input",ExpressionUUID->"dd1128a9-7eb8-4c33-9a00-d7c5a454194b"],
+Cell[2063, 67, 151, 2, 33, "Output",ExpressionUUID->"412fc9e8-6fb5-47a4-ac08-de9b8344b9a8"]
+}, Open  ]],
+Cell[2229, 72, 151, 3, 67, "Section",ExpressionUUID->"21f2fc5a-7604-4c52-871e-a5cda35999af"],
+Cell[2383, 77, 153, 3, 53, "Section",ExpressionUUID->"b1ab8cc9-ff14-4012-8529-8d2128a68b64"]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+
+(* End of internal cache information *)
+
