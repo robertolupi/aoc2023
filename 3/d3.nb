@@ -1,0 +1,3896 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 13.3' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[    184255,       3888]
+NotebookOptionsPosition[    178727,       3785]
+NotebookOutlinePosition[    179123,       3801]
+CellTagsIndexPosition[    179080,       3798]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["Advent of Code 2023", "Title",
+ CellChangeTimes->{{3.910521052743752*^9, 3.91052106292288*^9}, {
+  3.910521103943742*^9, 
+  3.910521104532507*^9}},ExpressionUUID->"6dccc01c-a83d-4134-90c6-\
+ac4427a103a5"],
+
+Cell[CellGroupData[{
+
+Cell["Day 3", "Chapter",
+ CellChangeTimes->{{3.910521110676861*^9, 3.910521114316334*^9}, {
+  3.910521461945562*^9, 3.91052146777507*^9}, {3.910587831986106*^9, 
+  3.9105878324101467`*^9}},ExpressionUUID->"c0913806-a5fa-4455-9c0c-\
+918ff01325ba"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"SetDirectory", "[", 
+  RowBox[{"NotebookDirectory", "[", "]"}], "]"}]], "Input",
+ CellChangeTimes->{{3.910518362881239*^9, 3.910518367065096*^9}},
+ CellLabel->"In[1]:=",ExpressionUUID->"7aaeb906-6cd3-488f-b768-8ce106d6f3b2"],
+
+Cell[BoxData["\<\"/home/rlupi/src/aoc2023/3\"\>"], "Output",
+ CellChangeTimes->{3.9105183687652473`*^9, 3.9105957934120417`*^9, 
+  3.910601037507884*^9, 3.9106052410908527`*^9, 3.910615696311936*^9, 
+  3.910615755762895*^9, 3.910617900792943*^9, 3.910618043083198*^9},
+ CellLabel->"Out[1]=",ExpressionUUID->"5992d270-f72f-48d1-85d3-5074984e8082"]
+}, Open  ]],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"testInput", "=", 
+   RowBox[{"StringSplit", "[", 
+    RowBox[{
+    "\"\<467..114..\n...*......\n..35..633.\n......#...\n617*......\n\
+.....+.58.\n..592.....\n......755.\n...$.*....\n.664.598..\>\"", ",", " ", 
+     "EndOfLine"}], "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.9105878475651417`*^9, 3.9105878923150883`*^9}},
+ CellLabel->"In[2]:=",ExpressionUUID->"2297da38-69b1-42fd-bd84-d2d64c44badf"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"input", "=", 
+   RowBox[{"Import", "[", 
+    RowBox[{"\"\<input.txt\>\"", ",", "\"\<Lines\>\""}], "]"}]}], 
+  ";"}]], "Input",
+ CellChangeTimes->{{3.910518394919921*^9, 3.910518430740594*^9}, {
+   3.910521470715783*^9, 3.910521478405547*^9}, 3.9105878372923717`*^9, {
+   3.9106006730745792`*^9, 3.910600673399115*^9}},
+ CellLabel->"In[3]:=",ExpressionUUID->"4b50a6d2-e075-4ea0-9dbd-35c469214eca"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Length", "[", "input", "]"}]], "Input",
+ CellChangeTimes->{{3.9105184346265917`*^9, 3.910518436609522*^9}},
+ CellLabel->"In[4]:=",ExpressionUUID->"dd1128a9-7eb8-4c33-9a00-d7c5a454194b"],
+
+Cell[BoxData["140"], "Output",
+ CellChangeTimes->{3.910518436979945*^9, 3.910595793498311*^9, 
+  3.910600680467081*^9, 3.9106010375747433`*^9, 3.910605241118762*^9, 
+  3.910615696568841*^9, 3.910615755987591*^9, 3.910617901009281*^9, 
+  3.9106180432530212`*^9},
+ CellLabel->"Out[4]=",ExpressionUUID->"a0975640-bc71-4fda-89a8-709c71997965"]
+}, Open  ]],
+
+Cell["\<\
+I will use  unevaluated forms to mark digits in the input data. So define a \
+custom formatting to make the display less cluttered:\
+\>", "Text",
+ CellChangeTimes->{{3.910589548875422*^9, 3.9105897317806463`*^9}, {
+  3.91059002786569*^9, 3.910590040110405*^9}, {3.91059022156415*^9, 
+  3.9105902298318653`*^9}, {3.910600688394484*^9, 
+  3.910600689240872*^9}},ExpressionUUID->"f4db9d9c-8f2c-48f2-8401-\
+0fced2cc3d6f"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"maybe", " ", "/:", " ", 
+   RowBox[{"MakeBoxes", "[", 
+    RowBox[{
+     RowBox[{"maybe", "[", "n_", "]"}], ",", " ", "StandardForm"}], "]"}], ":=", 
+   RowBox[{"FrameBox", "@", 
+    RowBox[{"StyleBox", "[", 
+     RowBox[{
+      RowBox[{"MakeBoxes", "[", 
+       RowBox[{"n", ",", "StandardForm"}], "]"}], ",", " ", 
+      RowBox[{"FontColor", "->", "Gray"}], ",", " ", 
+      RowBox[{"FontWeight", "->", "Bold"}]}], "]"}]}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"digit", " ", "/:", " ", 
+   RowBox[{"MakeBoxes", "[", 
+    RowBox[{
+     RowBox[{"digit", "[", "n_", "]"}], ",", " ", "StandardForm"}], "]"}], ":=", 
+   RowBox[{"FrameBox", "@", 
+    RowBox[{"StyleBox", "[", 
+     RowBox[{
+      RowBox[{"MakeBoxes", "[", 
+       RowBox[{"n", ",", "StandardForm"}], "]"}], ",", 
+      RowBox[{"FontColor", "->", "Red"}], ",", " ", 
+      RowBox[{"FontWeight", "->", "Bold"}]}], "]"}]}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{"schematic", " ", "/:", " ", 
+  RowBox[{"MakeBoxes", "[", 
+   RowBox[{
+    RowBox[{"schematic", "[", "data_", "]"}], ",", " ", "StandardForm"}], 
+   "]"}], " ", ":=", 
+  RowBox[{"MakeBoxes", "[", 
+   RowBox[{
+    RowBox[{"MatrixForm", "[", "data", "]"}], ",", "StandardForm"}], " ", 
+   "]"}], " "}]}], "Input",
+ CellChangeTimes->{{3.9105897334683123`*^9, 3.910589750083342*^9}, {
+  3.910589792669632*^9, 3.91058996634088*^9}, {3.910590058269374*^9, 
+  3.9105901922944717`*^9}, {3.9105904546922903`*^9, 3.910590493173359*^9}, {
+  3.9105905428017597`*^9, 3.910590558302701*^9}},
+ CellLabel->"In[5]:=",ExpressionUUID->"3eab24cb-25c1-4ddd-ac1c-ecda696be5f8"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{"digit", "[", "n", "]"}], ",", 
+   RowBox[{"maybe", "[", "n", "]"}]}], "}"}]], "Input",
+ CellChangeTimes->{{3.910589999664036*^9, 3.910590000687746*^9}, {
+  3.910590049746007*^9, 3.910590053087778*^9}},
+ CellLabel->"In[8]:=",ExpressionUUID->"cfc81ec3-2a7a-4ec8-9d77-6304a884a31e"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   FrameBox[
+    StyleBox["n",
+     FontWeight->Bold,
+     FontColor->RGBColor[1, 0, 0]]], ",", 
+   FrameBox[
+    StyleBox["n",
+     FontWeight->Bold,
+     FontColor->GrayLevel[0.5]]]}], "}"}]], "Output",
+ CellChangeTimes->{
+  3.910590000954358*^9, 3.9105900537119303`*^9, {3.910590098433263*^9, 
+   3.910590193588152*^9}, 3.910590231844186*^9, 3.9105905594136868`*^9, 
+   3.910595793533585*^9, 3.910601037605743*^9, 3.91060524113662*^9, 
+   3.9106156966776257`*^9, 3.910615756064897*^9, 3.9106179011055717`*^9, 
+   3.9106180432853317`*^9},
+ CellLabel->"Out[8]=",ExpressionUUID->"09b8f15f-3ec1-48b6-8448-d0aecc4084c3"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Part 1", "Section",
+ CellChangeTimes->{{3.910521070892994*^9, 
+  3.910521073999048*^9}},ExpressionUUID->"21f2fc5a-7604-4c52-871e-\
+a5cda35999af"],
+
+Cell["\<\
+This day was harder than I expected. I went off-track trying to use \
+CellularAutomata, but it\[CloseCurlyQuote]s too complex.\
+\>", "Text",
+ CellChangeTimes->{{3.9106177787886543`*^9, 3.91061783542651*^9}, {
+  3.910618080671054*^9, 
+  3.910618134973708*^9}},ExpressionUUID->"62970d4a-8eea-4ac1-9970-\
+e8bfa5b0fe21"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{"ParseSchematic", "[", "input_", "]"}], ":=", 
+   RowBox[{
+    RowBox[{"StringCases", "[", 
+     RowBox[{"input", ",", "\[IndentingNewLine]", 
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"n", ":", "DigitCharacter"}], ":>", 
+         RowBox[{"maybe", "[", 
+          RowBox[{
+           RowBox[{"Interpreter", "[", "Integer", "]"}], "[", "n", "]"}], 
+          "]"}]}], ",", "\[IndentingNewLine]", 
+        RowBox[{
+         RowBox[{"p", ":", "PunctuationCharacter"}], ":>", "p"}]}], 
+       "\[IndentingNewLine]", "}"}]}], "]"}], "//", "schematic"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{"testSchematic", "=", 
+  RowBox[{"ParseSchematic", "[", "testInput", "]"}]}]}], "Input",
+ CellChangeTimes->{{3.9106034377109537`*^9, 3.9106034536055593`*^9}, 
+   3.9106035025717373`*^9, 3.910605238249928*^9, {3.910616275336596*^9, 
+   3.910616279403668*^9}},
+ CellLabel->"In[9]:=",ExpressionUUID->"de8357c8-09cc-41dc-90f5-1189d55ba7c6"],
+
+Cell[BoxData[
+ TagBox[
+  RowBox[{"(", "\[NoBreak]", GridBox[{
+     {
+      FrameBox[
+       StyleBox["4",
+        FontWeight->Bold,
+        FontColor->GrayLevel[0.5]]], 
+      FrameBox[
+       StyleBox["6",
+        FontWeight->Bold,
+        FontColor->GrayLevel[0.5]]], 
+      FrameBox[
+       StyleBox["7",
+        FontWeight->Bold,
+        FontColor->GrayLevel[0.5]]], "\<\".\"\>", "\<\".\"\>", 
+      FrameBox[
+       StyleBox["1",
+        FontWeight->Bold,
+        FontColor->GrayLevel[0.5]]], 
+      FrameBox[
+       StyleBox["1",
+        FontWeight->Bold,
+        FontColor->GrayLevel[0.5]]], 
+      FrameBox[
+       StyleBox["4",
+        FontWeight->Bold,
+        FontColor->GrayLevel[0.5]]], "\<\".\"\>", "\<\".\"\>"},
+     {"\<\".\"\>", "\<\".\"\>", "\<\".\"\>", "\<\"*\"\>", "\<\".\"\>", "\<\".\
+\"\>", "\<\".\"\>", "\<\".\"\>", "\<\".\"\>", "\<\".\"\>"},
+     {"\<\".\"\>", "\<\".\"\>", 
+      FrameBox[
+       StyleBox["3",
+        FontWeight->Bold,
+        FontColor->GrayLevel[0.5]]], 
+      FrameBox[
+       StyleBox["5",
+        FontWeight->Bold,
+        FontColor->GrayLevel[0.5]]], "\<\".\"\>", "\<\".\"\>", 
+      FrameBox[
+       StyleBox["6",
+        FontWeight->Bold,
+        FontColor->GrayLevel[0.5]]], 
+      FrameBox[
+       StyleBox["3",
+        FontWeight->Bold,
+        FontColor->GrayLevel[0.5]]], 
+      FrameBox[
+       StyleBox["3",
+        FontWeight->Bold,
+        FontColor->GrayLevel[0.5]]], "\<\".\"\>"},
+     {"\<\".\"\>", "\<\".\"\>", "\<\".\"\>", "\<\".\"\>", "\<\".\"\>", "\<\".\
+\"\>", "\<\"#\"\>", "\<\".\"\>", "\<\".\"\>", "\<\".\"\>"},
+     {
+      FrameBox[
+       StyleBox["6",
+        FontWeight->Bold,
+        FontColor->GrayLevel[0.5]]], 
+      FrameBox[
+       StyleBox["1",
+        FontWeight->Bold,
+        FontColor->GrayLevel[0.5]]], 
+      FrameBox[
+       StyleBox["7",
+        FontWeight->Bold,
+        FontColor->GrayLevel[
+         0.5]]], "\<\"*\"\>", "\<\".\"\>", "\<\".\"\>", "\<\".\"\>", "\<\".\"\
+\>", "\<\".\"\>", "\<\".\"\>"},
+     {"\<\".\"\>", "\<\".\"\>", "\<\".\"\>", "\<\".\"\>", "\<\".\"\>", "\<\"+\
+\"\>", "\<\".\"\>", 
+      FrameBox[
+       StyleBox["5",
+        FontWeight->Bold,
+        FontColor->GrayLevel[0.5]]], 
+      FrameBox[
+       StyleBox["8",
+        FontWeight->Bold,
+        FontColor->GrayLevel[0.5]]], "\<\".\"\>"},
+     {"\<\".\"\>", "\<\".\"\>", 
+      FrameBox[
+       StyleBox["5",
+        FontWeight->Bold,
+        FontColor->GrayLevel[0.5]]], 
+      FrameBox[
+       StyleBox["9",
+        FontWeight->Bold,
+        FontColor->GrayLevel[0.5]]], 
+      FrameBox[
+       StyleBox["2",
+        FontWeight->Bold,
+        FontColor->GrayLevel[
+         0.5]]], "\<\".\"\>", "\<\".\"\>", "\<\".\"\>", "\<\".\"\>", "\<\".\"\
+\>"},
+     {"\<\".\"\>", "\<\".\"\>", "\<\".\"\>", "\<\".\"\>", "\<\".\"\>", "\<\".\
+\"\>", 
+      FrameBox[
+       StyleBox["7",
+        FontWeight->Bold,
+        FontColor->GrayLevel[0.5]]], 
+      FrameBox[
+       StyleBox["5",
+        FontWeight->Bold,
+        FontColor->GrayLevel[0.5]]], 
+      FrameBox[
+       StyleBox["5",
+        FontWeight->Bold,
+        FontColor->GrayLevel[0.5]]], "\<\".\"\>"},
+     {"\<\".\"\>", "\<\".\"\>", "\<\".\"\>", "\<\"$\"\>", "\<\".\"\>", "\<\"*\
+\"\>", "\<\".\"\>", "\<\".\"\>", "\<\".\"\>", "\<\".\"\>"},
+     {"\<\".\"\>", 
+      FrameBox[
+       StyleBox["6",
+        FontWeight->Bold,
+        FontColor->GrayLevel[0.5]]], 
+      FrameBox[
+       StyleBox["6",
+        FontWeight->Bold,
+        FontColor->GrayLevel[0.5]]], 
+      FrameBox[
+       StyleBox["4",
+        FontWeight->Bold,
+        FontColor->GrayLevel[0.5]]], "\<\".\"\>", 
+      FrameBox[
+       StyleBox["5",
+        FontWeight->Bold,
+        FontColor->GrayLevel[0.5]]], 
+      FrameBox[
+       StyleBox["9",
+        FontWeight->Bold,
+        FontColor->GrayLevel[0.5]]], 
+      FrameBox[
+       StyleBox["8",
+        FontWeight->Bold,
+        FontColor->GrayLevel[0.5]]], "\<\".\"\>", "\<\".\"\>"}
+    },
+    GridBoxAlignment->{"Columns" -> {{Center}}, "Rows" -> {{Baseline}}},
+    GridBoxSpacings->{"Columns" -> {
+        Offset[0.27999999999999997`], {
+         Offset[0.7]}, 
+        Offset[0.27999999999999997`]}, "Rows" -> {
+        Offset[0.2], {
+         Offset[0.4]}, 
+        Offset[0.2]}}], "\[NoBreak]", ")"}],
+  Function[BoxForm`e$, 
+   MatrixForm[BoxForm`e$]]]], "Output",
+ CellChangeTimes->{3.9106034544398127`*^9, 3.9106035030864162`*^9, 
+  3.91060524584146*^9, 3.910615699267761*^9, 3.910615758671677*^9, 
+  3.910615834672534*^9, 3.9106162797536697`*^9, 3.910617901242775*^9, 
+  3.9106180434804583`*^9},
+ CellLabel->"Out[10]=",ExpressionUUID->"9ce70299-b67f-4494-9869-66e210a3cea3"]
+}, Open  ]],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"ArraySweep", "[", "f_", "]"}], "[", "a_", "]"}], ":=", 
+   RowBox[{"ArrayFilter", "[", 
+    RowBox[{
+     RowBox[{
+      RowBox[{"f", "[", 
+       RowBox[{
+        RowBox[{"#", "[", 
+         RowBox[{"[", 
+          RowBox[{"2", ",", "2"}], "]"}], "]"}], ",", 
+        RowBox[{"DeleteCases", "[", 
+         RowBox[{
+          RowBox[{"ArrayRules", "[", "#", "]"}], ",", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{"2", ",", "2"}], "}"}], "->", "_"}]}], "]"}]}], "]"}], 
+      "&"}], ",", "a", ",", "1", ",", 
+     RowBox[{"Padding", "->", "\"\<.\>\""}]}], "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.910616076787128*^9, 3.910616123826262*^9}, {
+  3.910616738922357*^9, 3.9106167500954313`*^9}},
+ CellLabel->"In[11]:=",ExpressionUUID->"454227bb-ac76-433b-b408-c9391c602065"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"MarkDigits", "[", 
+    RowBox[{"schematic", "[", "sc_", "]"}], "]"}], ":=", 
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", "mark", "}"}], ",", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"mark", "[", 
+        RowBox[{
+         RowBox[{"maybe", "[", "d_", "]"}], ",", " ", 
+         RowBox[{"neighbours_", "/;", 
+          RowBox[{
+           RowBox[{"Count", "[", 
+            RowBox[{"neighbours", ",", 
+             RowBox[{
+              RowBox[{"{", 
+               RowBox[{"_", ",", "_"}], "}"}], "->", 
+              RowBox[{"c_String", "/;", 
+               RowBox[{"c", "!=", "\"\<.\>\""}]}]}]}], "]"}], ">", "0"}]}]}], 
+        "]"}], ":=", 
+       RowBox[{"digit", "[", "d", "]"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"mark", "[", 
+        RowBox[{"x_", ",", "_"}], "]"}], ":=", "x"}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{
+        RowBox[{"ArraySweep", "[", "mark", "]"}], "[", "sc", "]"}], "//", 
+       "schematic"}]}]}], "\[IndentingNewLine]", "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.9106042885189257`*^9, 3.910604290508235*^9}, {
+   3.9106046325467463`*^9, 3.9106047565380793`*^9}, 3.910604806434991*^9, {
+   3.9106048379270267`*^9, 3.910604853868162*^9}, {3.910604960919598*^9, 
+   3.910605012481758*^9}, {3.910605044237658*^9, 3.9106051592809258`*^9}, {
+   3.9106051918355827`*^9, 3.910605208366199*^9}, {3.910606396791012*^9, 
+   3.910606410670105*^9}, {3.910606448907221*^9, 3.91060645780031*^9}, {
+   3.9106065071155777`*^9, 3.91060652929169*^9}, {3.91060874451641*^9, 
+   3.910608795951384*^9}, {3.91061613949603*^9, 3.9106161529142723`*^9}, {
+   3.9106162125296297`*^9, 3.910616257709731*^9}, {3.910616523513897*^9, 
+   3.910616541419786*^9}, {3.9106170031139727`*^9, 3.910617004466731*^9}},
+ CellLabel->"In[12]:=",ExpressionUUID->"017deca9-714e-494d-9fef-8e2a42909f79"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"MarkDigits", "[", "testSchematic", "]"}]], "Input",
+ CellChangeTimes->{{3.9106159032009974`*^9, 3.910615910827457*^9}, {
+  3.910616234250759*^9, 3.910616268483446*^9}},
+ CellLabel->"In[13]:=",ExpressionUUID->"3f2f69bc-210d-4dcb-ae43-2a20ff9f8db6"],
+
+Cell[BoxData[
+ TagBox[
+  RowBox[{"(", "\[NoBreak]", GridBox[{
+     {
+      FrameBox[
+       StyleBox["4",
+        FontWeight->Bold,
+        FontColor->GrayLevel[0.5]]], 
+      FrameBox[
+       StyleBox["6",
+        FontWeight->Bold,
+        FontColor->GrayLevel[0.5]]], 
+      FrameBox[
+       StyleBox["7",
+        FontWeight->Bold,
+        FontColor->RGBColor[1, 0, 0]]], "\<\".\"\>", "\<\".\"\>", 
+      FrameBox[
+       StyleBox["1",
+        FontWeight->Bold,
+        FontColor->GrayLevel[0.5]]], 
+      FrameBox[
+       StyleBox["1",
+        FontWeight->Bold,
+        FontColor->GrayLevel[0.5]]], 
+      FrameBox[
+       StyleBox["4",
+        FontWeight->Bold,
+        FontColor->GrayLevel[0.5]]], "\<\".\"\>", "\<\".\"\>"},
+     {"\<\".\"\>", "\<\".\"\>", "\<\".\"\>", "\<\"*\"\>", "\<\".\"\>", "\<\".\
+\"\>", "\<\".\"\>", "\<\".\"\>", "\<\".\"\>", "\<\".\"\>"},
+     {"\<\".\"\>", "\<\".\"\>", 
+      FrameBox[
+       StyleBox["3",
+        FontWeight->Bold,
+        FontColor->RGBColor[1, 0, 0]]], 
+      FrameBox[
+       StyleBox["5",
+        FontWeight->Bold,
+        FontColor->RGBColor[1, 0, 0]]], "\<\".\"\>", "\<\".\"\>", 
+      FrameBox[
+       StyleBox["6",
+        FontWeight->Bold,
+        FontColor->RGBColor[1, 0, 0]]], 
+      FrameBox[
+       StyleBox["3",
+        FontWeight->Bold,
+        FontColor->RGBColor[1, 0, 0]]], 
+      FrameBox[
+       StyleBox["3",
+        FontWeight->Bold,
+        FontColor->GrayLevel[0.5]]], "\<\".\"\>"},
+     {"\<\".\"\>", "\<\".\"\>", "\<\".\"\>", "\<\".\"\>", "\<\".\"\>", "\<\".\
+\"\>", "\<\"#\"\>", "\<\".\"\>", "\<\".\"\>", "\<\".\"\>"},
+     {
+      FrameBox[
+       StyleBox["6",
+        FontWeight->Bold,
+        FontColor->GrayLevel[0.5]]], 
+      FrameBox[
+       StyleBox["1",
+        FontWeight->Bold,
+        FontColor->GrayLevel[0.5]]], 
+      FrameBox[
+       StyleBox["7",
+        FontWeight->Bold,
+        FontColor->RGBColor[
+         1, 0, 0]]], "\<\"*\"\>", "\<\".\"\>", "\<\".\"\>", "\<\".\"\>", \
+"\<\".\"\>", "\<\".\"\>", "\<\".\"\>"},
+     {"\<\".\"\>", "\<\".\"\>", "\<\".\"\>", "\<\".\"\>", "\<\".\"\>", "\<\"+\
+\"\>", "\<\".\"\>", 
+      FrameBox[
+       StyleBox["5",
+        FontWeight->Bold,
+        FontColor->GrayLevel[0.5]]], 
+      FrameBox[
+       StyleBox["8",
+        FontWeight->Bold,
+        FontColor->GrayLevel[0.5]]], "\<\".\"\>"},
+     {"\<\".\"\>", "\<\".\"\>", 
+      FrameBox[
+       StyleBox["5",
+        FontWeight->Bold,
+        FontColor->GrayLevel[0.5]]], 
+      FrameBox[
+       StyleBox["9",
+        FontWeight->Bold,
+        FontColor->GrayLevel[0.5]]], 
+      FrameBox[
+       StyleBox["2",
+        FontWeight->Bold,
+        FontColor->RGBColor[
+         1, 0, 0]]], "\<\".\"\>", "\<\".\"\>", "\<\".\"\>", "\<\".\"\>", \
+"\<\".\"\>"},
+     {"\<\".\"\>", "\<\".\"\>", "\<\".\"\>", "\<\".\"\>", "\<\".\"\>", "\<\".\
+\"\>", 
+      FrameBox[
+       StyleBox["7",
+        FontWeight->Bold,
+        FontColor->RGBColor[1, 0, 0]]], 
+      FrameBox[
+       StyleBox["5",
+        FontWeight->Bold,
+        FontColor->GrayLevel[0.5]]], 
+      FrameBox[
+       StyleBox["5",
+        FontWeight->Bold,
+        FontColor->GrayLevel[0.5]]], "\<\".\"\>"},
+     {"\<\".\"\>", "\<\".\"\>", "\<\".\"\>", "\<\"$\"\>", "\<\".\"\>", "\<\"*\
+\"\>", "\<\".\"\>", "\<\".\"\>", "\<\".\"\>", "\<\".\"\>"},
+     {"\<\".\"\>", 
+      FrameBox[
+       StyleBox["6",
+        FontWeight->Bold,
+        FontColor->GrayLevel[0.5]]], 
+      FrameBox[
+       StyleBox["6",
+        FontWeight->Bold,
+        FontColor->RGBColor[1, 0, 0]]], 
+      FrameBox[
+       StyleBox["4",
+        FontWeight->Bold,
+        FontColor->RGBColor[1, 0, 0]]], "\<\".\"\>", 
+      FrameBox[
+       StyleBox["5",
+        FontWeight->Bold,
+        FontColor->RGBColor[1, 0, 0]]], 
+      FrameBox[
+       StyleBox["9",
+        FontWeight->Bold,
+        FontColor->RGBColor[1, 0, 0]]], 
+      FrameBox[
+       StyleBox["8",
+        FontWeight->Bold,
+        FontColor->GrayLevel[0.5]]], "\<\".\"\>", "\<\".\"\>"}
+    },
+    GridBoxAlignment->{"Columns" -> {{Center}}, "Rows" -> {{Baseline}}},
+    GridBoxSpacings->{"Columns" -> {
+        Offset[0.27999999999999997`], {
+         Offset[0.7]}, 
+        Offset[0.27999999999999997`]}, "Rows" -> {
+        Offset[0.2], {
+         Offset[0.4]}, 
+        Offset[0.2]}}], "\[NoBreak]", ")"}],
+  Function[BoxForm`e$, 
+   MatrixForm[BoxForm`e$]]]], "Output",
+ CellChangeTimes->{{3.910615905118862*^9, 3.91061591131673*^9}, 
+   3.9106161547531643`*^9, {3.91061624233991*^9, 3.9106162828767*^9}, {
+   3.91061653266462*^9, 3.910616542713421*^9}, {3.910616743613056*^9, 
+   3.9106167515881233`*^9}, 3.910617901321639*^9, 3.910618010920888*^9, 
+   3.9106180435209293`*^9},
+ CellLabel->"Out[13]=",ExpressionUUID->"60b9a750-c8b1-41c2-9240-d7558fade80f"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{"ExpandDigits", "[", 
+    RowBox[{"schematic", "[", "sc_", "]"}], "]"}], ":=", 
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", "expand", "}"}], ",", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"expand", "[", 
+        RowBox[{
+         RowBox[{"maybe", "[", "d_", "]"}], ",", 
+         RowBox[{"neighbours_", "/;", 
+          RowBox[{
+           RowBox[{"Count", "[", 
+            RowBox[{"neighbours", ",", 
+             RowBox[{
+              RowBox[{"{", 
+               RowBox[{"_", ",", "_"}], "}"}], "->", 
+              RowBox[{"digit", "[", "_", "]"}]}]}], "]"}], ">", "0"}]}]}], 
+        "]"}], ":=", 
+       RowBox[{"digit", "[", "d", "]"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"expand", "[", 
+        RowBox[{"x_", ",", "_"}], "]"}], ":=", "x"}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"FixedPoint", "[", 
+        RowBox[{
+         RowBox[{"ArraySweep", "[", "expand", "]"}], ",", "sc"}], "]"}], "//",
+        "schematic"}]}]}], "\[IndentingNewLine]", "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"MarkDigits", "[", "testSchematic", "]"}], "//", 
+  "ExpandDigits"}]}], "Input",
+ CellChangeTimes->{{3.910615963153556*^9, 3.910616046797481*^9}, {
+   3.910616310049796*^9, 3.9106163805997868`*^9}, {3.910616420470705*^9, 
+   3.91061646875572*^9}, {3.91061650320296*^9, 3.910616521196354*^9}, {
+   3.9106165532384777`*^9, 3.9106166002568483`*^9}, {3.9106166328810368`*^9, 
+   3.910616646425098*^9}, {3.910616676870577*^9, 3.910616705207737*^9}, {
+   3.9106167836800127`*^9, 3.910616897432047*^9}, {3.910616939119492*^9, 
+   3.91061702224016*^9}, 3.910618012770754*^9},
+ CellLabel->"In[14]:=",ExpressionUUID->"65baf82e-fb88-465d-9dfb-9d8a174b93f3"],
+
+Cell[BoxData[
+ TagBox[
+  RowBox[{"(", "\[NoBreak]", GridBox[{
+     {
+      FrameBox[
+       StyleBox["4",
+        FontWeight->Bold,
+        FontColor->RGBColor[1, 0, 0]]], 
+      FrameBox[
+       StyleBox["6",
+        FontWeight->Bold,
+        FontColor->RGBColor[1, 0, 0]]], 
+      FrameBox[
+       StyleBox["7",
+        FontWeight->Bold,
+        FontColor->RGBColor[1, 0, 0]]], "\<\".\"\>", "\<\".\"\>", 
+      FrameBox[
+       StyleBox["1",
+        FontWeight->Bold,
+        FontColor->GrayLevel[0.5]]], 
+      FrameBox[
+       StyleBox["1",
+        FontWeight->Bold,
+        FontColor->GrayLevel[0.5]]], 
+      FrameBox[
+       StyleBox["4",
+        FontWeight->Bold,
+        FontColor->GrayLevel[0.5]]], "\<\".\"\>", "\<\".\"\>"},
+     {"\<\".\"\>", "\<\".\"\>", "\<\".\"\>", "\<\"*\"\>", "\<\".\"\>", "\<\".\
+\"\>", "\<\".\"\>", "\<\".\"\>", "\<\".\"\>", "\<\".\"\>"},
+     {"\<\".\"\>", "\<\".\"\>", 
+      FrameBox[
+       StyleBox["3",
+        FontWeight->Bold,
+        FontColor->RGBColor[1, 0, 0]]], 
+      FrameBox[
+       StyleBox["5",
+        FontWeight->Bold,
+        FontColor->RGBColor[1, 0, 0]]], "\<\".\"\>", "\<\".\"\>", 
+      FrameBox[
+       StyleBox["6",
+        FontWeight->Bold,
+        FontColor->RGBColor[1, 0, 0]]], 
+      FrameBox[
+       StyleBox["3",
+        FontWeight->Bold,
+        FontColor->RGBColor[1, 0, 0]]], 
+      FrameBox[
+       StyleBox["3",
+        FontWeight->Bold,
+        FontColor->RGBColor[1, 0, 0]]], "\<\".\"\>"},
+     {"\<\".\"\>", "\<\".\"\>", "\<\".\"\>", "\<\".\"\>", "\<\".\"\>", "\<\".\
+\"\>", "\<\"#\"\>", "\<\".\"\>", "\<\".\"\>", "\<\".\"\>"},
+     {
+      FrameBox[
+       StyleBox["6",
+        FontWeight->Bold,
+        FontColor->RGBColor[1, 0, 0]]], 
+      FrameBox[
+       StyleBox["1",
+        FontWeight->Bold,
+        FontColor->RGBColor[1, 0, 0]]], 
+      FrameBox[
+       StyleBox["7",
+        FontWeight->Bold,
+        FontColor->RGBColor[
+         1, 0, 0]]], "\<\"*\"\>", "\<\".\"\>", "\<\".\"\>", "\<\".\"\>", \
+"\<\".\"\>", "\<\".\"\>", "\<\".\"\>"},
+     {"\<\".\"\>", "\<\".\"\>", "\<\".\"\>", "\<\".\"\>", "\<\".\"\>", "\<\"+\
+\"\>", "\<\".\"\>", 
+      FrameBox[
+       StyleBox["5",
+        FontWeight->Bold,
+        FontColor->GrayLevel[0.5]]], 
+      FrameBox[
+       StyleBox["8",
+        FontWeight->Bold,
+        FontColor->GrayLevel[0.5]]], "\<\".\"\>"},
+     {"\<\".\"\>", "\<\".\"\>", 
+      FrameBox[
+       StyleBox["5",
+        FontWeight->Bold,
+        FontColor->RGBColor[1, 0, 0]]], 
+      FrameBox[
+       StyleBox["9",
+        FontWeight->Bold,
+        FontColor->RGBColor[1, 0, 0]]], 
+      FrameBox[
+       StyleBox["2",
+        FontWeight->Bold,
+        FontColor->RGBColor[
+         1, 0, 0]]], "\<\".\"\>", "\<\".\"\>", "\<\".\"\>", "\<\".\"\>", \
+"\<\".\"\>"},
+     {"\<\".\"\>", "\<\".\"\>", "\<\".\"\>", "\<\".\"\>", "\<\".\"\>", "\<\".\
+\"\>", 
+      FrameBox[
+       StyleBox["7",
+        FontWeight->Bold,
+        FontColor->RGBColor[1, 0, 0]]], 
+      FrameBox[
+       StyleBox["5",
+        FontWeight->Bold,
+        FontColor->RGBColor[1, 0, 0]]], 
+      FrameBox[
+       StyleBox["5",
+        FontWeight->Bold,
+        FontColor->RGBColor[1, 0, 0]]], "\<\".\"\>"},
+     {"\<\".\"\>", "\<\".\"\>", "\<\".\"\>", "\<\"$\"\>", "\<\".\"\>", "\<\"*\
+\"\>", "\<\".\"\>", "\<\".\"\>", "\<\".\"\>", "\<\".\"\>"},
+     {"\<\".\"\>", 
+      FrameBox[
+       StyleBox["6",
+        FontWeight->Bold,
+        FontColor->RGBColor[1, 0, 0]]], 
+      FrameBox[
+       StyleBox["6",
+        FontWeight->Bold,
+        FontColor->RGBColor[1, 0, 0]]], 
+      FrameBox[
+       StyleBox["4",
+        FontWeight->Bold,
+        FontColor->RGBColor[1, 0, 0]]], "\<\".\"\>", 
+      FrameBox[
+       StyleBox["5",
+        FontWeight->Bold,
+        FontColor->RGBColor[1, 0, 0]]], 
+      FrameBox[
+       StyleBox["9",
+        FontWeight->Bold,
+        FontColor->RGBColor[1, 0, 0]]], 
+      FrameBox[
+       StyleBox["8",
+        FontWeight->Bold,
+        FontColor->RGBColor[1, 0, 0]]], "\<\".\"\>", "\<\".\"\>"}
+    },
+    GridBoxAlignment->{"Columns" -> {{Center}}, "Rows" -> {{Baseline}}},
+    GridBoxSpacings->{"Columns" -> {
+        Offset[0.27999999999999997`], {
+         Offset[0.7]}, 
+        Offset[0.27999999999999997`]}, "Rows" -> {
+        Offset[0.2], {
+         Offset[0.4]}, 
+        Offset[0.2]}}], "\[NoBreak]", ")"}],
+  Function[BoxForm`e$, 
+   MatrixForm[BoxForm`e$]]]], "Output",
+ CellChangeTimes->{
+  3.910616429128642*^9, 3.910616469264967*^9, 3.910616512152522*^9, {
+   3.9106165813237457`*^9, 3.910616600568769*^9}, {3.910616688404974*^9, 
+   3.9106167056757383`*^9}, {3.910616785556987*^9, 3.910616796512989*^9}, 
+   3.910616838906885*^9, {3.910616882700794*^9, 3.910616885761064*^9}, {
+   3.910616980850153*^9, 3.91061702302966*^9}, 3.910617901359992*^9, 
+   3.9106180131138678`*^9, 3.910618043545883*^9},
+ CellLabel->"Out[15]=",ExpressionUUID->"a274c304-6887-4693-9a77-a47dd64f98f5"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"ExtractNumbers", "[", 
+   RowBox[{"schematic", "[", "m_", "]"}], "]"}], ":=", 
+  RowBox[{"Block", "[", 
+   RowBox[{
+    RowBox[{"{", "numbers", "}"}], ",", "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{"numbers", "=", 
+      RowBox[{"Map", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"SequenceCases", "[", 
+          RowBox[{"#", ",", 
+           RowBox[{"{", 
+            RowBox[{
+             RowBox[{"digit", "[", "_", "]"}], ".."}], "}"}]}], "]"}], "&"}], 
+        ",", "m"}], "]"}]}], ";", "\[IndentingNewLine]", 
+     RowBox[{"numbers", "=", 
+      RowBox[{"numbers", "/.", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"digit", "[", "d_", "]"}], ":>", "d"}], ",", 
+         RowBox[{
+          RowBox[{"{", "}"}], "->", "Nothing"}]}], "}"}]}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"Apply", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"FromDigits", "[", 
+          RowBox[{"{", "##", "}"}], "]"}], "&"}], ",", "numbers", ",", 
+        RowBox[{"{", "2", "}"}]}], "]"}], "//", "Flatten"}]}]}], 
+   "\[IndentingNewLine]", "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"MarkDigits", "[", "testSchematic", "]"}], "//", "ExpandDigits"}], 
+  "//", "ExtractNumbers"}]}], "Input",
+ CellChangeTimes->{{3.910599456203367*^9, 3.910599721226865*^9}, {
+  3.910599788135934*^9, 3.910600334308118*^9}, {3.910600391025556*^9, 
+  3.9106004189589243`*^9}, {3.910600449279416*^9, 3.9106005665600147`*^9}, {
+  3.91060062025874*^9, 3.910600621177644*^9}, {3.910617070638637*^9, 
+  3.9106170720611763`*^9}},
+ CellLabel->"In[16]:=",ExpressionUUID->"ce7716ff-03df-4870-ad42-1ffb6871b267"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+  "467", ",", "35", ",", "633", ",", "617", ",", "592", ",", "755", ",", 
+   "664", ",", "598"}], "}"}]], "Output",
+ CellChangeTimes->{{3.9105998597815027`*^9, 3.910600013096615*^9}, {
+   3.910600048712255*^9, 3.9106001132625303`*^9}, {3.910600170467185*^9, 
+   3.9106002338360023`*^9}, {3.910600264622205*^9, 3.9106003345565653`*^9}, {
+   3.910600391947945*^9, 3.91060056680847*^9}, 3.910600621416183*^9, 
+   3.9106010378318577`*^9, 3.910604164697249*^9, 3.9106052412212057`*^9, 
+   3.9106156972040367`*^9, 3.910615756473238*^9, {3.910617046963739*^9, 
+   3.910617072393128*^9}, 3.9106179013991957`*^9, 3.910618043574923*^9},
+ CellLabel->"Out[17]=",ExpressionUUID->"1570f6b1-0c1e-4471-86b3-90803c9ad078"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"MarkDigits", "[", "testSchematic", "]"}], "//", "ExpandDigits"}],
+    "//", "ExtractNumbers"}], "//", "Total"}]], "Input",
+ CellChangeTimes->{{3.910600610192827*^9, 3.910600625110044*^9}, 
+   3.9106170875614*^9},
+ CellLabel->"In[18]:=",ExpressionUUID->"1cbe5e53-a9d8-4440-b39a-3024b93fc7db"],
+
+Cell[BoxData["4361"], "Output",
+ CellChangeTimes->{{3.910600611200869*^9, 3.910600625560383*^9}, 
+   3.910601037859413*^9, 3.910604165407609*^9, 3.910605241237002*^9, 
+   3.910615697306361*^9, 3.910615756526883*^9, 3.910617049119383*^9, 
+   3.910617087968216*^9, 3.910617901457469*^9, 3.910618043603333*^9},
+ CellLabel->"Out[18]=",ExpressionUUID->"ad0f09fd-8e96-4ea6-b755-341f6d684837"]
+}, Open  ]],
+
+Cell["Ok, let\[CloseCurlyQuote]s see it on real data:", "Text",
+ CellChangeTimes->{{3.910600699881259*^9, 3.910600703820343*^9}, {
+  3.910604166050358*^9, 
+  3.910604167236742*^9}},ExpressionUUID->"43d5b355-79b2-437a-9b59-\
+ba389ec0baae"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{
+     RowBox[{"ParseSchematic", "[", "input", "]"}], "//", "MarkDigits"}], "//",
+     "ExpandDigits"}], "//", "ExtractNumbers"}], "//", "Total"}]], "Input",
+ CellChangeTimes->{{3.910600705120304*^9, 3.910600758751876*^9}, {
+  3.910617095470057*^9, 3.910617103232624*^9}},
+ CellLabel->"In[19]:=",ExpressionUUID->"75e195c2-a318-424e-bada-c7a4fc605f9d"],
+
+Cell[BoxData["540212"], "Output",
+ CellChangeTimes->{{3.910600707092629*^9, 3.910600761193201*^9}, 
+   3.910601041129714*^9, 3.910604173174439*^9, 3.910605245803643*^9, 
+   3.910615699056403*^9, 3.9106157585182753`*^9, 3.910617106753252*^9, 
+   3.910617905213485*^9, 3.910618045981367*^9},
+ CellLabel->"Out[19]=",ExpressionUUID->"c7599e0d-a97a-46de-884c-d4efc11e0e58"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Part 2", "Section",
+ CellChangeTimes->{{3.910600773198509*^9, 
+  3.910600773960594*^9}},ExpressionUUID->"3a9e5fc4-8932-422a-8475-\
+8d0acc427caa"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"part", "/:", " ", 
+   RowBox[{"MakeBoxes", "[", 
+    RowBox[{
+     RowBox[{"part", "[", 
+      RowBox[{"unique_", ",", "n_"}], "]"}], ",", " ", "StandardForm"}], 
+    "]"}], ":=", 
+   RowBox[{"UnderscriptBox", "[", "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{"FrameBox", "@", 
+      RowBox[{"StyleBox", "[", 
+       RowBox[{
+        RowBox[{"MakeBoxes", "[", 
+         RowBox[{"n", ",", "StandardForm"}], "]"}], ",", " ", 
+        RowBox[{"FontWeight", "->", "Bold"}]}], "]"}]}], ",", 
+     RowBox[{"MakeBoxes", "[", 
+      RowBox[{"unique", ",", "StandardForm"}], "]"}]}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"sym", "/:", 
+   RowBox[{"MakeBoxes", "[", 
+    RowBox[{
+     RowBox[{"sym", "[", 
+      RowBox[{"unique_", ",", "class_"}], "]"}], ",", " ", "StandardForm"}], 
+    "]"}], ":=", 
+   RowBox[{"UnderscriptBox", "[", 
+    RowBox[{
+     RowBox[{"MakeBoxes", "[", 
+      RowBox[{"class", ",", "StandardForm"}], "]"}], ",", 
+     RowBox[{"MakeBoxes", "[", 
+      RowBox[{"unique", ",", " ", "StandardForm"}], "]"}]}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{"part", "[", 
+    RowBox[{
+     RowBox[{"Unique", "[", "]"}], ",", "345"}], "]"}], ",", 
+   RowBox[{"sym", "[", 
+    RowBox[{
+     RowBox[{"Unique", "[", "]"}], ",", "\"\<*\>\""}], "]"}]}], 
+  "}"}]}], "Input",
+ CellChangeTimes->{{3.9106090376623573`*^9, 3.910609247357546*^9}, {
+  3.910609296856887*^9, 3.910609339075286*^9}, {3.910609412683214*^9, 
+  3.91060953108038*^9}, {3.9106174397299213`*^9, 3.9106174680408773`*^9}},
+ CellLabel->"In[20]:=",ExpressionUUID->"b3e2e3ef-ae6b-4974-92aa-dda24a10f59b"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   UnderscriptBox[
+    FrameBox[
+     StyleBox["345",
+      FontWeight->Bold]], "$11"], ",", 
+   UnderscriptBox["\<\"*\"\>", "$12"]}], "}"}]], "Output",
+ CellChangeTimes->{
+  3.910609339434857*^9, {3.910609489915949*^9, 3.9106095314997253`*^9}, 
+   3.9106156995236177`*^9, 3.9106157589250097`*^9, 3.910617146573354*^9, 
+   3.9106174685754023`*^9, 3.910617905288765*^9, 3.910618046051197*^9},
+ CellLabel->"Out[22]=",ExpressionUUID->"0b494dea-3182-4efc-9577-b9bca322a1ee"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{"EngineGraph", "[", 
+    RowBox[{"schematic", "[", "sc_", "]"}], "]"}], ":=", 
+   RowBox[{"Block", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+      "m", ",", "numbers", ",", "parts", ",", " ", "connect", ",", "g"}], 
+      "}"}], ",", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"m", "=", 
+       RowBox[{
+        RowBox[{
+         RowBox[{
+          RowBox[{"schematic", "[", "sc", "]"}], "//", "MarkDigits"}], "//", 
+         "ExpandDigits"}], " ", "//", "First"}]}], 
+      RowBox[{"(*", " ", 
+       RowBox[{
+       "First", " ", "just", " ", "to", " ", "strip", " ", "schematic"}], " ",
+        "*)"}], ";", "\[IndentingNewLine]", 
+      RowBox[{"Echo", "[", 
+       RowBox[{"Head", "@", "m"}], "]"}], ";", "\[IndentingNewLine]", 
+      RowBox[{"parts", "=", 
+       RowBox[{"Map", "[", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"SequenceReplace", "[", 
+           RowBox[{"#", ",", 
+            RowBox[{
+             RowBox[{"p", ":", 
+              RowBox[{"{", 
+               RowBox[{
+                RowBox[{"digit", "[", "_", "]"}], ".."}], "}"}]}], ":>", 
+             "\[IndentingNewLine]", 
+             RowBox[{"Module", "[", 
+              RowBox[{
+               RowBox[{"{", 
+                RowBox[{"u", "=", 
+                 RowBox[{"Unique", "[", "]"}]}], "}"}], ",", 
+               RowBox[{"Splice", "@", 
+                RowBox[{"Table", "[", 
+                 RowBox[{
+                  RowBox[{"part", "[", 
+                   RowBox[{"u", ",", 
+                    RowBox[{"FromDigits", "@", 
+                    RowBox[{"Apply", "[", 
+                    RowBox[{"Identity", ",", "p", ",", 
+                    RowBox[{"{", "1", "}"}]}], "]"}]}]}], "]"}], ",", 
+                  RowBox[{"Length", "[", "p", "]"}]}], "]"}]}]}], "]"}]}]}], 
+           "]"}], "&"}], ",", "m"}], "]"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"parts", " ", "=", " ", 
+       RowBox[{"parts", "/.", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{
+           RowBox[{"maybe", "[", "_", "]"}], "->", "\"\<.\>\""}], ",", 
+          RowBox[{"\"\<.\>\"", "->", "\"\<.\>\""}], ",", 
+          RowBox[{"c_String", ":>", 
+           RowBox[{"sym", "[", 
+            RowBox[{
+             RowBox[{"Unique", "[", "]"}], ",", "c"}], "]"}]}]}], "}"}]}]}], 
+      ";", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"Attributes", "[", "connect", "]"}], "=", 
+       RowBox[{"{", "Listable", "}"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"connect", "[", 
+        RowBox[{"_", ",", 
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{"_", ",", "_"}], "}"}], "->", "\"\<.\>\""}]}], "]"}], ":=",
+        "Nothing"}], ";", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"connect", "[", 
+        RowBox[{"\"\<.\>\"", ",", "_"}], "]"}], ":=", "Nothing"}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"connect", "[", 
+        RowBox[{"p_", ",", "_"}], "]"}], ":=", "Nothing"}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"connect", "[", 
+        RowBox[{"s_sym", ",", 
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{"_", ",", "_"}], "}"}], "->", "p_part"}]}], "]"}], ":=", 
+       RowBox[{"s", "->", "p"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"g", "=", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"ArrayFilter", "[", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"connect", "[", 
+             RowBox[{
+              RowBox[{"#", "[", 
+               RowBox[{"[", 
+                RowBox[{"2", ",", "2"}], "]"}], "]"}], ",", 
+              RowBox[{"DeleteCases", "[", 
+               RowBox[{
+                RowBox[{"ArrayRules", "[", "#", "]"}], ",", 
+                RowBox[{
+                 RowBox[{"{", 
+                  RowBox[{"2", ",", "2"}], "}"}], "->", "_"}]}], "]"}]}], 
+             "]"}], "&"}], ",", "parts", ",", "1", ",", 
+           RowBox[{"Padding", "->", "\"\<.\>\""}]}], "]"}], "//", "Flatten"}],
+         "//", "DeleteDuplicates"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"Graph", "[", "g", "]"}]}]}], "\[IndentingNewLine]", "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{"testEngine", "=", 
+  RowBox[{"Graph", "[", 
+   RowBox[{
+    RowBox[{"EngineGraph", "[", "testSchematic", "]"}], ",", 
+    RowBox[{"VertexLabels", "->", "\"\<Name\>\""}], ",", 
+    RowBox[{"GraphLayout", "->", "\"\<PlanarEmbedding\>\""}], ",", 
+    RowBox[{"ImageSize", "->", "Large"}]}], "]"}]}]}], "Input",
+ CellChangeTimes->{{3.910606831449482*^9, 3.910606848118518*^9}, 
+   3.9106070290300827`*^9, {3.9106071457129307`*^9, 3.910607402887465*^9}, {
+   3.910607482223876*^9, 3.9106075871125298`*^9}, {3.910607728844799*^9, 
+   3.910607774897729*^9}, {3.910607812361598*^9, 3.9106078481031322`*^9}, {
+   3.910607885619967*^9, 3.910607904415176*^9}, {3.910607961898686*^9, 
+   3.9106079736485*^9}, {3.910608012451076*^9, 3.910608042447712*^9}, {
+   3.910608092345269*^9, 3.9106081018671007`*^9}, {3.910608155291079*^9, 
+   3.9106087304764843`*^9}, {3.910608804632491*^9, 3.910608925599636*^9}, {
+   3.910608975192572*^9, 3.910609011016062*^9}, {3.910609555414863*^9, 
+   3.910609934333852*^9}, {3.9106100450841923`*^9, 3.910610148270113*^9}, {
+   3.910610179352963*^9, 3.910610271922206*^9}, {3.9106105077292747`*^9, 
+   3.910610508909848*^9}, {3.910610552526545*^9, 3.9106106138954973`*^9}, {
+   3.910611050584844*^9, 3.910611052288638*^9}, {3.910611123418117*^9, 
+   3.9106111375245667`*^9}, 3.910617257237759*^9, {3.910617482214018*^9, 
+   3.910617497036084*^9}, {3.910617555613183*^9, 3.9106175894760933`*^9}, {
+   3.910617634578515*^9, 3.910617692709203*^9}, {3.910617919058153*^9, 
+   3.910618021768243*^9}},
+ CellLabel->"In[23]:=",ExpressionUUID->"a3dcf0dd-0a8e-4a46-be96-3359a28835ca"],
+
+Cell[BoxData["List"], "Echo",
+ CellChangeTimes->{
+  3.910618046077976*^9},ExpressionUUID->"ec1a2ca5-f65b-4299-b3be-\
+6553ec84309f"],
+
+Cell[BoxData[
+ GraphicsBox[
+  NamespaceBox["NetworkGraphics",
+   DynamicModuleBox[{Typeset`graph = HoldComplete[
+     Graph[{
+       $CellContext`sym[$CellContext`$21, "*"], 
+       $CellContext`part[$CellContext`$13, 467], 
+       $CellContext`part[$CellContext`$14, 35], 
+       $CellContext`sym[$CellContext`$22, "#"], 
+       $CellContext`part[$CellContext`$15, 633], 
+       $CellContext`sym[$CellContext`$23, "*"], 
+       $CellContext`part[$CellContext`$16, 617], 
+       $CellContext`sym[$CellContext`$24, "+"], 
+       $CellContext`part[$CellContext`$17, 592], 
+       $CellContext`sym[$CellContext`$25, "$"], 
+       $CellContext`part[$CellContext`$19, 664], 
+       $CellContext`sym[$CellContext`$26, "*"], 
+       $CellContext`part[$CellContext`$18, 755], 
+       $CellContext`part[$CellContext`$20, 598]}, {{{1, 2}, {1, 3}, {4, 5}, {
+       6, 7}, {8, 9}, {10, 11}, {12, 13}, {12, 14}}, Null}, {
+      GraphLayout -> {"Dimension" -> 2, "VertexLayout" -> "PlanarEmbedding"}, 
+       ImageSize -> Large, VertexLabels -> {"Name"}}]]}, 
+    TagBox[GraphicsGroupBox[{
+       {Hue[0.6, 0.7, 0.5], Opacity[0.7], Arrowheads[Medium], 
+        ArrowBox[{{{0.161094375, -1.027119375}, {
+         1.161094375, -1.027119375}}, {{0.161094375, -1.027119375}, {
+         0.661094375, -0.161094375}}, {{1.483283125, -0.161094375}, {
+         2.483283125, -0.161094375}}, {{1.483283125, -0.75520125}, {
+         2.483283125, -0.75520125}}, {{1.483283125, -1.349308125}, {
+         2.483283125, -1.349308125}}, {{1.483283125, -1.9434150000000001`}, {
+         2.483283125, -1.9434150000000001`}}, {{0.161094375, -2.215333125}, {
+         1.161094375, -2.215333125}}, {{0.161094375, -2.215333125}, {
+         0.661094375, -1.3493081249999999`}}}, 0.02517310954160365]}, 
+       {Hue[0.6, 0.2, 0.8], EdgeForm[{GrayLevel[0], Opacity[
+        0.7]}], {DiskBox[{0.161094375, -1.027119375}, 0.02517310954160365], 
+         InsetBox[
+          RowBox[{"sym", "(", 
+           RowBox[{"$21", ",", "\<\"*\"\>"}], ")"}], {0.13057359992382223, -1.0447405485981682},
+           ImageScaled[{1.14951909069313, 0.8749999344335537}],
+          BaseStyle->"Graphics"]}, {
+         DiskBox[{1.161094375, -1.027119375}, 0.02517310954160365], InsetBox[
+          RowBox[{"part", "(", 
+           RowBox[{"$13", ",", "467"}], ")"}], {1.1963367283582451, -1.027119375},
+           ImageScaled[{-0.25, 0.5000000000000002}],
+          BaseStyle->"Graphics"]}, {
+         DiskBox[{0.661094375, -0.161094375}, 0.02517310954160365], InsetBox[
+          RowBox[{"part", "(", 
+           RowBox[{"$14", ",", "35"}], ")"}], {0.678715557841031, -0.13057360526019227},
+           ImageScaled[{0.12499986886711867, -0.149518977128707}],
+          BaseStyle->"Graphics"]}, {
+         DiskBox[{1.483283125, -0.161094375}, 0.02517310954160365], InsetBox[
+          RowBox[{"sym", "(", 
+           RowBox[{"$22", ",", "\<\"#\"\>"}], ")"}], {1.448040771641755, -0.161094375},
+           ImageScaled[{1.25, 0.49999999999999983}],
+          BaseStyle->"Graphics"]}, {
+         DiskBox[{2.483283125, -0.161094375}, 0.02517310954160365], InsetBox[
+          RowBox[{"part", "(", 
+           RowBox[{"$15", ",", "633"}], ")"}], {2.5185254783582445, -0.161094375},
+           ImageScaled[{-0.25, 0.5000000000000002}],
+          BaseStyle->"Graphics"]}, {
+         DiskBox[{1.483283125, -0.75520125}, 0.02517310954160365], InsetBox[
+          RowBox[{"sym", "(", 
+           RowBox[{"$23", ",", "\<\"*\"\>"}], ")"}], {1.448040771641755, -0.75520125},
+           ImageScaled[{1.25, 0.49999999999999983}],
+          BaseStyle->"Graphics"]}, {
+         DiskBox[{2.483283125, -0.75520125}, 0.02517310954160365], InsetBox[
+          RowBox[{"part", "(", 
+           RowBox[{"$16", ",", "617"}], ")"}], {2.5185254783582445, -0.75520125},
+           ImageScaled[{-0.25, 0.5000000000000002}],
+          BaseStyle->"Graphics"]}, {
+         DiskBox[{1.483283125, -1.349308125}, 0.02517310954160365], InsetBox[
+          RowBox[{"sym", "(", 
+           RowBox[{"$24", ",", "\<\"+\"\>"}], ")"}], {1.448040771641755, -1.349308125},
+           ImageScaled[{1.25, 0.49999999999999983}],
+          BaseStyle->"Graphics"]}, {
+         DiskBox[{2.483283125, -1.349308125}, 0.02517310954160365], InsetBox[
+          RowBox[{"part", "(", 
+           RowBox[{"$17", ",", "592"}], ")"}], {2.5185254783582445, -1.349308125},
+           ImageScaled[{-0.25, 0.5000000000000002}],
+          BaseStyle->"Graphics"]}, {
+         DiskBox[{1.483283125, -1.9434150000000001`}, 0.02517310954160365], 
+         InsetBox[
+          RowBox[{"sym", "(", 
+           RowBox[{"$25", ",", "\<\"$\"\>"}], ")"}], {1.448040771641755, -1.9434150000000001},
+           ImageScaled[{1.25, 0.49999999999999983}],
+          BaseStyle->"Graphics"]}, {
+         DiskBox[{2.483283125, -1.9434150000000001`}, 0.02517310954160365], 
+         InsetBox[
+          RowBox[{"part", "(", 
+           RowBox[{"$19", ",", "664"}], ")"}], {2.5185254783582445, -1.9434150000000001},
+           ImageScaled[{-0.25, 0.5000000000000002}],
+          BaseStyle->"Graphics"]}, {
+         DiskBox[{0.161094375, -2.215333125}, 0.02517310954160365], InsetBox[
+          RowBox[{"sym", "(", 
+           RowBox[{"$26", ",", "\<\"*\"\>"}], ")"}], {0.13057359992382223, -2.232954298598168},
+           ImageScaled[{1.14951909069313, 0.8749999344335537}],
+          BaseStyle->"Graphics"]}, {
+         DiskBox[{1.161094375, -2.215333125}, 0.02517310954160365], InsetBox[
+          RowBox[{"part", "(", 
+           RowBox[{"$18", ",", "755"}], ")"}], {1.1963367283582451, -2.215333125},
+           ImageScaled[{-0.25, 0.5000000000000002}],
+          BaseStyle->"Graphics"]}, {
+         DiskBox[{0.661094375, -1.3493081249999999`}, 0.02517310954160365], 
+         InsetBox[
+          RowBox[{"part", "(", 
+           RowBox[{"$20", ",", "598"}], ")"}], {0.678715557841031, -1.318787355260192},
+           ImageScaled[{0.12499986886711867, -0.149518977128707}],
+          BaseStyle->"Graphics"]}}}],
+     MouseAppearanceTag["NetworkGraphics"]],
+    AllowKernelInitialization->False]],
+  DefaultBaseStyle->"NetworkGraphics",
+  FormatType->TraditionalForm,
+  FrameTicks->None,
+  ImageSize->Large]], "Output",
+ CellChangeTimes->{
+  3.910617590434329*^9, {3.9106176409063168`*^9, 3.910617693026754*^9}, {
+   3.910617905466544*^9, 3.910618046116901*^9}},
+ CellLabel->"Out[24]=",ExpressionUUID->"5a178ac9-0784-4d1a-ae13-c324b09d53b0"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"NeighborhoodGraph", "[", 
+  RowBox[{"testEngine", ",", 
+   RowBox[{"sym", "[", 
+    RowBox[{"_", ",", "\"\<*\>\""}], "]"}], ",", 
+   RowBox[{"VertexLabels", "->", "\"\<Name\>\""}]}], "]"}]], "Input",
+ CellChangeTimes->{{3.910610670062223*^9, 3.910610721472618*^9}, {
+  3.910610764171748*^9, 3.910610771532669*^9}, {3.910611143048245*^9, 
+  3.9106111490475893`*^9}, {3.910617270721257*^9, 3.910617294503644*^9}},
+ CellLabel->"In[25]:=",ExpressionUUID->"3b86b7f7-9e87-45cc-bd5b-271e48029fb5"],
+
+Cell[BoxData[
+ GraphicsBox[
+  NamespaceBox["NetworkGraphics",
+   DynamicModuleBox[{Typeset`graph = HoldComplete[
+     Graph[{
+       $CellContext`sym[$CellContext`$21, "*"], 
+       $CellContext`sym[$CellContext`$23, "*"], 
+       $CellContext`sym[$CellContext`$26, "*"], 
+       $CellContext`part[$CellContext`$13, 467], 
+       $CellContext`part[$CellContext`$14, 35], 
+       $CellContext`part[$CellContext`$16, 617], 
+       $CellContext`part[$CellContext`$18, 755], 
+       $CellContext`part[$CellContext`$20, 598]}, {{{1, 4}, {1, 5}, {2, 6}, {
+       3, 7}, {3, 8}}, Null}, {
+      GraphLayout -> {"Dimension" -> 2, "VertexLayout" -> "PlanarEmbedding"}, 
+       ImageSize -> Large, 
+       VertexCoordinates -> {{0.161094375, -1.027119375}, {
+        1.483283125, -0.75520125}, {0.161094375, -2.215333125}, {
+        1.161094375, -1.027119375}, {0.661094375, -0.161094375}, {
+        2.483283125, -0.75520125}, {1.161094375, -2.215333125}, {
+        0.661094375, -1.3493081249999999`}}, VertexLabels -> {"Name"}}]]}, 
+    TagBox[GraphicsGroupBox[{
+       {Hue[0.6, 0.7, 0.5], Opacity[0.7], Arrowheads[Medium], 
+        ArrowBox[{{{0.161094375, -1.027119375}, {
+         1.161094375, -1.027119375}}, {{0.161094375, -1.027119375}, {
+         0.661094375, -0.161094375}}, {{1.483283125, -0.75520125}, {
+         2.483283125, -0.75520125}}, {{0.161094375, -2.215333125}, {
+         1.161094375, -2.215333125}}, {{0.161094375, -2.215333125}, {
+         0.661094375, -1.3493081249999999`}}}, 0.02517310954160365]}, 
+       {Hue[0.6, 0.2, 0.8], EdgeForm[{GrayLevel[0], Opacity[
+        0.7]}], {DiskBox[{0.161094375, -1.027119375}, 0.02517310954160365], 
+         InsetBox[
+          RowBox[{"sym", "(", 
+           RowBox[{"$21", ",", "\<\"*\"\>"}], ")"}], {0.13057359992382223, -1.0447405485981682},
+           ImageScaled[{1.14951909069313, 0.8749999344335537}],
+          BaseStyle->"Graphics"]}, {
+         DiskBox[{1.483283125, -0.75520125}, 0.02517310954160365], InsetBox[
+          RowBox[{"sym", "(", 
+           RowBox[{"$23", ",", "\<\"*\"\>"}], ")"}], {1.448040771641755, -0.75520125},
+           ImageScaled[{1.25, 0.49999999999999983}],
+          BaseStyle->"Graphics"]}, {
+         DiskBox[{0.161094375, -2.215333125}, 0.02517310954160365], InsetBox[
+          RowBox[{"sym", "(", 
+           RowBox[{"$26", ",", "\<\"*\"\>"}], ")"}], {0.13057359992382223, -2.232954298598168},
+           ImageScaled[{1.14951909069313, 0.8749999344335537}],
+          BaseStyle->"Graphics"]}, {
+         DiskBox[{1.161094375, -1.027119375}, 0.02517310954160365], InsetBox[
+          RowBox[{"part", "(", 
+           RowBox[{"$13", ",", "467"}], ")"}], {1.1963367283582451, -1.027119375},
+           ImageScaled[{-0.25, 0.5000000000000002}],
+          BaseStyle->"Graphics"]}, {
+         DiskBox[{0.661094375, -0.161094375}, 0.02517310954160365], InsetBox[
+          RowBox[{"part", "(", 
+           RowBox[{"$14", ",", "35"}], ")"}], {0.678715557841031, -0.13057360526019227},
+           ImageScaled[{0.12499986886711867, -0.149518977128707}],
+          BaseStyle->"Graphics"]}, {
+         DiskBox[{2.483283125, -0.75520125}, 0.02517310954160365], InsetBox[
+          RowBox[{"part", "(", 
+           RowBox[{"$16", ",", "617"}], ")"}], {2.5185254783582445, -0.75520125},
+           ImageScaled[{-0.25, 0.5000000000000002}],
+          BaseStyle->"Graphics"]}, {
+         DiskBox[{1.161094375, -2.215333125}, 0.02517310954160365], InsetBox[
+          RowBox[{"part", "(", 
+           RowBox[{"$18", ",", "755"}], ")"}], {1.1963367283582451, -2.215333125},
+           ImageScaled[{-0.25, 0.5000000000000002}],
+          BaseStyle->"Graphics"]}, {
+         DiskBox[{0.661094375, -1.3493081249999999`}, 0.02517310954160365], 
+         InsetBox[
+          RowBox[{"part", "(", 
+           RowBox[{"$20", ",", "598"}], ")"}], {0.678715557841031, -1.318787355260192},
+           ImageScaled[{0.12499986886711867, -0.149518977128707}],
+          BaseStyle->"Graphics"]}}}],
+     MouseAppearanceTag["NetworkGraphics"]],
+    AllowKernelInitialization->False]],
+  DefaultBaseStyle->"NetworkGraphics",
+  FormatType->TraditionalForm,
+  FrameTicks->None,
+  ImageSize->Large]], "Output",
+ CellChangeTimes->{{3.910610672679796*^9, 3.910610686307002*^9}, 
+   3.910610721729946*^9, {3.910610768380001*^9, 3.910610771840227*^9}, 
+   3.9106110553806667`*^9, {3.910611126688648*^9, 3.910611149339633*^9}, 
+   3.9106156997343807`*^9, 3.910615759125505*^9, 3.9106171493118267`*^9, {
+   3.910617259619451*^9, 3.9106172948132067`*^9}, 3.910617499431223*^9, 
+   3.910617591640744*^9, 3.910617707349015*^9, 3.910617905515853*^9, {
+   3.9106180280998993`*^9, 3.910618046147592*^9}},
+ CellLabel->"Out[25]=",ExpressionUUID->"adf3b539-c5c3-48bf-85b6-936eabc7199a"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"AdjacencyList", "[", "%", "]"}]], "Input",
+ CellChangeTimes->{{3.910610773403802*^9, 3.910610777125798*^9}},
+ CellLabel->"In[26]:=",ExpressionUUID->"dc1277cb-8192-464a-9345-17a64bbb77b2"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{
+     UnderscriptBox[
+      FrameBox[
+       StyleBox["467",
+        FontWeight->Bold]], "$13"], ",", 
+     UnderscriptBox[
+      FrameBox[
+       StyleBox["35",
+        FontWeight->Bold]], "$14"]}], "}"}], ",", 
+   RowBox[{"{", 
+    UnderscriptBox[
+     FrameBox[
+      StyleBox["617",
+       FontWeight->Bold]], "$16"], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{
+     UnderscriptBox[
+      FrameBox[
+       StyleBox["755",
+        FontWeight->Bold]], "$18"], ",", 
+     UnderscriptBox[
+      FrameBox[
+       StyleBox["598",
+        FontWeight->Bold]], "$20"]}], "}"}], ",", 
+   RowBox[{"{", 
+    UnderscriptBox["\<\"*\"\>", "$21"], "}"}], ",", 
+   RowBox[{"{", 
+    UnderscriptBox["\<\"*\"\>", "$21"], "}"}], ",", 
+   RowBox[{"{", 
+    UnderscriptBox["\<\"*\"\>", "$23"], "}"}], ",", 
+   RowBox[{"{", 
+    UnderscriptBox["\<\"*\"\>", "$26"], "}"}], ",", 
+   RowBox[{"{", 
+    UnderscriptBox["\<\"*\"\>", "$26"], "}"}]}], "}"}]], "Output",
+ CellChangeTimes->{
+  3.910610777344248*^9, 3.91061105663583*^9, 3.910615699751235*^9, 
+   3.910615759188772*^9, 3.910617151142915*^9, 3.9106172968063917`*^9, 
+   3.9106175006921377`*^9, 3.9106175928986807`*^9, 3.910617715895681*^9, 
+   3.9106179055563498`*^9, {3.910618029316283*^9, 3.910618046163497*^9}},
+ CellLabel->"Out[26]=",ExpressionUUID->"e093c15a-0edd-49f1-94f6-e5463286d21a"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{"GearRatios", "[", "engine_", "]"}], ":=", 
+   RowBox[{"Cases", "[", "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{
+      RowBox[{"NeighborhoodGraph", "[", 
+       RowBox[{"engine", ",", 
+        RowBox[{"sym", "[", 
+         RowBox[{"_", ",", "\"\<*\>\""}], "]"}]}], "]"}], "//", 
+      "AdjacencyList"}], ",", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"part", "[", 
+         RowBox[{"_", ",", "a_"}], "]"}], ",", 
+        RowBox[{"part", "[", 
+         RowBox[{"_", ",", "b_"}], "]"}]}], "}"}], ":>", 
+      RowBox[{"a", "*", "b"}]}]}], "\[IndentingNewLine]", "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"GearRatios", "[", "testEngine", "]"}], "//", "Total"}]}], "Input",
+ CellChangeTimes->{{3.910610806142809*^9, 3.910611016069911*^9}, {
+  3.9106177392156982`*^9, 3.910617741880885*^9}},
+ CellLabel->"In[27]:=",ExpressionUUID->"cd2c882c-147c-4068-ac51-11a9b8294a9f"],
+
+Cell[BoxData["467835"], "Output",
+ CellChangeTimes->{{3.9106109694851103`*^9, 3.9106110163197823`*^9}, 
+   3.910611057340488*^9, 3.910615699818118*^9, 3.910615759231423*^9, 
+   3.910617152774118*^9, 3.91061731430258*^9, 3.910617501536862*^9, {
+   3.9106175991621857`*^9, 3.910617627462552*^9}, {3.9106177169697847`*^9, 
+   3.910617742160885*^9}, 3.9106179055662746`*^9, 3.910618046187045*^9},
+ CellLabel->"Out[28]=",ExpressionUUID->"e447ab25-814f-4945-bab4-94f2cbab1885"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"inputEngine", "=", 
+  RowBox[{
+   RowBox[{"ParseSchematic", "[", "input", "]"}], "//", 
+   "EngineGraph"}]}]], "Input",
+ CellChangeTimes->{{3.910611082821991*^9, 3.910611099317006*^9}, {
+   3.910611191012703*^9, 3.9106111922253428`*^9}, 3.910617377227468*^9},
+ CellLabel->"In[29]:=",ExpressionUUID->"d31cf825-5c78-454a-a24d-5523aae23f60"],
+
+Cell[BoxData["List"], "Echo",
+ CellChangeTimes->{
+  3.9106180474469337`*^9},ExpressionUUID->"bf2c9360-5ff0-403b-9a3e-\
+73bd193ce0c6"],
+
+Cell[BoxData[
+ GraphicsBox[
+  NamespaceBox["NetworkGraphics",
+   DynamicModuleBox[{Typeset`graph = HoldComplete[
+     Graph[{
+       $CellContext`sym[$CellContext`$1100, "*"], 
+       $CellContext`part[$CellContext`$27, 633], 
+       $CellContext`part[$CellContext`$40, 181], 
+       $CellContext`sym[$CellContext`$1101, "#"], 
+       $CellContext`part[$CellContext`$42, 865], 
+       $CellContext`sym[$CellContext`$1102, "#"], 
+       $CellContext`part[$CellContext`$28, 803], 
+       $CellContext`sym[$CellContext`$1103, "*"], 
+       $CellContext`part[$CellContext`$29, 361], 
+       $CellContext`part[$CellContext`$35, 313], 
+       $CellContext`sym[$CellContext`$1104, "*"], 
+       $CellContext`part[$CellContext`$30, 192], 
+       $CellContext`part[$CellContext`$46, 798], 
+       $CellContext`sym[$CellContext`$1105, "*"], 
+       $CellContext`part[$CellContext`$31, 539], 
+       $CellContext`part[$CellContext`$48, 776], 
+       $CellContext`sym[$CellContext`$1106, "-"], 
+       $CellContext`part[$CellContext`$32, 973], 
+       $CellContext`sym[$CellContext`$1107, "+"], 
+       $CellContext`part[$CellContext`$33, 340], 
+       $CellContext`sym[$CellContext`$1108, "-"], 
+       $CellContext`part[$CellContext`$39, 670], 
+       $CellContext`sym[$CellContext`$1109, "@"], 
+       $CellContext`part[$CellContext`$49, 563], 
+       $CellContext`sym[$CellContext`$1110, "@"], 
+       $CellContext`part[$CellContext`$34, 329], 
+       $CellContext`sym[$CellContext`$1111, "%"], 
+       $CellContext`part[$CellContext`$51, 921], 
+       $CellContext`sym[$CellContext`$1112, "+"], 
+       $CellContext`part[$CellContext`$36, 766], 
+       $CellContext`sym[$CellContext`$1113, "*"], 
+       $CellContext`part[$CellContext`$37, 472], 
+       $CellContext`part[$CellContext`$53, 219], 
+       $CellContext`sym[$CellContext`$1114, "%"], 
+       $CellContext`part[$CellContext`$55, 584], 
+       $CellContext`sym[$CellContext`$1115, "*"], 
+       $CellContext`part[$CellContext`$38, 249], 
+       $CellContext`part[$CellContext`$57, 431], 
+       $CellContext`sym[$CellContext`$1116, "*"], 
+       $CellContext`part[$CellContext`$41, 814], 
+       $CellContext`part[$CellContext`$58, 466], 
+       $CellContext`sym[$CellContext`$1117, "&"], 
+       $CellContext`part[$CellContext`$60, 815], 
+       $CellContext`sym[$CellContext`$1118, "-"], 
+       $CellContext`part[$CellContext`$43, 968], 
+       $CellContext`sym[$CellContext`$1119, "*"], 
+       $CellContext`part[$CellContext`$44, 605], 
+       $CellContext`part[$CellContext`$63, 887], 
+       $CellContext`sym[$CellContext`$1120, "*"], 
+       $CellContext`part[$CellContext`$45, 128], 
+       $CellContext`part[$CellContext`$64, 114], 
+       $CellContext`sym[$CellContext`$1121, "*"], 
+       $CellContext`part[$CellContext`$50, 815], 
+       $CellContext`part[$CellContext`$65, 521], 
+       $CellContext`sym[$CellContext`$1122, "*"], 
+       $CellContext`part[$CellContext`$47, 638], 
+       $CellContext`part[$CellContext`$66, 796], 
+       $CellContext`sym[$CellContext`$1123, "&"], 
+       $CellContext`part[$CellContext`$69, 941], 
+       $CellContext`sym[$CellContext`$1124, "%"], 
+       $CellContext`part[$CellContext`$70, 837], 
+       $CellContext`sym[$CellContext`$1125, "&"], 
+       $CellContext`part[$CellContext`$72, 910], 
+       $CellContext`sym[$CellContext`$1126, "-"], 
+       $CellContext`part[$CellContext`$73, 988], 
+       $CellContext`sym[$CellContext`$1127, "+"], 
+       $CellContext`part[$CellContext`$52, 428], 
+       $CellContext`sym[$CellContext`$1128, "*"], 
+       $CellContext`part[$CellContext`$54, 993], 
+       $CellContext`part[$CellContext`$75, 946], 
+       $CellContext`sym[$CellContext`$1129, "*"], 
+       $CellContext`part[$CellContext`$56, 990], 
+       $CellContext`part[$CellContext`$76, 240], 
+       $CellContext`sym[$CellContext`$1130, "*"], 
+       $CellContext`part[$CellContext`$59, 971], 
+       $CellContext`part[$CellContext`$80, 895], 
+       $CellContext`sym[$CellContext`$1131, "*"], 
+       $CellContext`part[$CellContext`$61, 634], 
+       $CellContext`part[$CellContext`$81, 223], 
+       $CellContext`sym[$CellContext`$1132, "*"], 
+       $CellContext`part[$CellContext`$62, 197], 
+       $CellContext`part[$CellContext`$82, 160], 
+       $CellContext`sym[$CellContext`$1133, "&"], 
+       $CellContext`part[$CellContext`$83, 603], 
+       $CellContext`sym[$CellContext`$1134, "*"], 
+       $CellContext`part[$CellContext`$67, 713], 
+       $CellContext`part[$CellContext`$68, 546], 
+       $CellContext`sym[$CellContext`$1135, "-"], 
+       $CellContext`part[$CellContext`$79, 707], 
+       $CellContext`sym[$CellContext`$1136, "*"], 
+       $CellContext`part[$CellContext`$71, 903], 
+       $CellContext`part[$CellContext`$86, 697], 
+       $CellContext`sym[$CellContext`$1137, "&"], 
+       $CellContext`part[$CellContext`$74, 61], 
+       $CellContext`sym[$CellContext`$1138, "="], 
+       $CellContext`part[$CellContext`$77, 697], 
+       $CellContext`sym[$CellContext`$1139, "$"], 
+       $CellContext`part[$CellContext`$78, 563], 
+       $CellContext`sym[$CellContext`$1140, "+"], 
+       $CellContext`part[$CellContext`$85, 633], 
+       $CellContext`sym[$CellContext`$1141, "@"], 
+       $CellContext`part[$CellContext`$87, 70], 
+       $CellContext`sym[$CellContext`$1142, "*"], 
+       $CellContext`part[$CellContext`$84, 495], 
+       $CellContext`sym[$CellContext`$1143, "+"], 
+       $CellContext`part[$CellContext`$89, 832], 
+       $CellContext`sym[$CellContext`$1144, "@"], 
+       $CellContext`part[$CellContext`$97, 245], 
+       $CellContext`sym[$CellContext`$1145, "#"], 
+       $CellContext`part[$CellContext`$91, 863], 
+       $CellContext`sym[$CellContext`$1146, "*"], 
+       $CellContext`part[$CellContext`$92, 324], 
+       $CellContext`part[$CellContext`$98, 145], 
+       $CellContext`sym[$CellContext`$1147, "*"], 
+       $CellContext`part[$CellContext`$88, 568], 
+       $CellContext`part[$CellContext`$100, 315], 
+       $CellContext`sym[$CellContext`$1148, "#"], 
+       $CellContext`part[$CellContext`$90, 551], 
+       $CellContext`sym[$CellContext`$1149, "&"], 
+       $CellContext`part[$CellContext`$102, 174], 
+       $CellContext`sym[$CellContext`$1150, "#"], 
+       $CellContext`part[$CellContext`$104, 472], 
+       $CellContext`sym[$CellContext`$1151, "*"], 
+       $CellContext`part[$CellContext`$93, 837], 
+       $CellContext`part[$CellContext`$105, 66], 
+       $CellContext`sym[$CellContext`$1152, "$"], 
+       $CellContext`part[$CellContext`$94, 701], 
+       $CellContext`sym[$CellContext`$1153, "/"], 
+       $CellContext`part[$CellContext`$95, 740], 
+       $CellContext`sym[$CellContext`$1154, "*"], 
+       $CellContext`part[$CellContext`$96, 72], 
+       $CellContext`part[$CellContext`$107, 348], 
+       $CellContext`sym[$CellContext`$1155, "/"], 
+       $CellContext`part[$CellContext`$109, 908], 
+       $CellContext`sym[$CellContext`$1156, "*"], 
+       $CellContext`part[$CellContext`$103, 971], 
+       $CellContext`part[$CellContext`$112, 654], 
+       $CellContext`sym[$CellContext`$1157, "*"], 
+       $CellContext`part[$CellContext`$99, 580], 
+       $CellContext`part[$CellContext`$114, 501], 
+       $CellContext`sym[$CellContext`$1158, "%"], 
+       $CellContext`part[$CellContext`$101, 4], 
+       $CellContext`sym[$CellContext`$1159, "-"], 
+       $CellContext`part[$CellContext`$117, 913], 
+       $CellContext`sym[$CellContext`$1160, "-"], 
+       $CellContext`part[$CellContext`$110, 108], 
+       $CellContext`sym[$CellContext`$1161, "&"], 
+       $CellContext`part[$CellContext`$121, 228], 
+       $CellContext`sym[$CellContext`$1162, "*"], 
+       $CellContext`part[$CellContext`$106, 260], 
+       $CellContext`part[$CellContext`$116, 528], 
+       $CellContext`sym[$CellContext`$1163, "*"], 
+       $CellContext`part[$CellContext`$108, 179], 
+       $CellContext`part[$CellContext`$123, 665], 
+       $CellContext`sym[$CellContext`$1164, "*"], 
+       $CellContext`part[$CellContext`$111, 726], 
+       $CellContext`sym[$CellContext`$1165, "*"], 
+       $CellContext`part[$CellContext`$118, 639], 
+       $CellContext`part[$CellContext`$125, 561], 
+       $CellContext`sym[$CellContext`$1166, "-"], 
+       $CellContext`part[$CellContext`$113, 422], 
+       $CellContext`sym[$CellContext`$1167, "-"], 
+       $CellContext`part[$CellContext`$119, 131], 
+       $CellContext`sym[$CellContext`$1168, "%"], 
+       $CellContext`part[$CellContext`$126, 237], 
+       $CellContext`sym[$CellContext`$1169, "*"], 
+       $CellContext`part[$CellContext`$115, 279], 
+       $CellContext`sym[$CellContext`$1170, "*"], 
+       $CellContext`part[$CellContext`$120, 5], 
+       $CellContext`part[$CellContext`$132, 441], 
+       $CellContext`sym[$CellContext`$1171, "/"], 
+       $CellContext`part[$CellContext`$133, 355], 
+       $CellContext`sym[$CellContext`$1172, "*"], 
+       $CellContext`part[$CellContext`$122, 900], 
+       $CellContext`part[$CellContext`$137, 798], 
+       $CellContext`sym[$CellContext`$1173, "*"], 
+       $CellContext`part[$CellContext`$124, 220], 
+       $CellContext`part[$CellContext`$140, 420], 
+       $CellContext`sym[$CellContext`$1174, "*"], 
+       $CellContext`part[$CellContext`$127, 576], 
+       $CellContext`sym[$CellContext`$1175, "="], 
+       $CellContext`part[$CellContext`$128, 381], 
+       $CellContext`sym[$CellContext`$1176, "*"], 
+       $CellContext`part[$CellContext`$135, 481], 
+       $CellContext`part[$CellContext`$136, 422], 
+       $CellContext`sym[$CellContext`$1177, "+"], 
+       $CellContext`part[$CellContext`$138, 924], 
+       $CellContext`sym[$CellContext`$1178, "#"], 
+       $CellContext`part[$CellContext`$139, 462], 
+       $CellContext`sym[$CellContext`$1179, "@"], 
+       $CellContext`part[$CellContext`$141, 659], 
+       $CellContext`sym[$CellContext`$1180, "#"], 
+       $CellContext`part[$CellContext`$129, 416], 
+       $CellContext`sym[$CellContext`$1181, "*"], 
+       $CellContext`part[$CellContext`$130, 996], 
+       $CellContext`part[$CellContext`$146, 43], 
+       $CellContext`sym[$CellContext`$1182, "*"], 
+       $CellContext`part[$CellContext`$131, 799], 
+       $CellContext`part[$CellContext`$147, 1], 
+       $CellContext`sym[$CellContext`$1183, "*"], 
+       $CellContext`part[$CellContext`$149, 624], 
+       $CellContext`sym[$CellContext`$1184, "%"], 
+       $CellContext`part[$CellContext`$134, 570], 
+       $CellContext`sym[$CellContext`$1185, "*"], 
+       $CellContext`part[$CellContext`$142, 233], 
+       $CellContext`part[$CellContext`$155, 103], 
+       $CellContext`sym[$CellContext`$1186, "/"], 
+       $CellContext`part[$CellContext`$143, 955], 
+       $CellContext`sym[$CellContext`$1187, "#"], 
+       $CellContext`part[$CellContext`$159, 508], 
+       $CellContext`sym[$CellContext`$1188, "#"], 
+       $CellContext`part[$CellContext`$163, 92], 
+       $CellContext`sym[$CellContext`$1189, "*"], 
+       $CellContext`part[$CellContext`$144, 265], 
+       $CellContext`part[$CellContext`$154, 614], 
+       $CellContext`sym[$CellContext`$1190, "*"], 
+       $CellContext`part[$CellContext`$145, 86], 
+       $CellContext`part[$CellContext`$165, 626], 
+       $CellContext`sym[$CellContext`$1191, "#"], 
+       $CellContext`part[$CellContext`$148, 398], 
+       $CellContext`sym[$CellContext`$1192, "@"], 
+       $CellContext`part[$CellContext`$150, 896], 
+       $CellContext`sym[$CellContext`$1193, "*"], 
+       $CellContext`part[$CellContext`$151, 53], 
+       $CellContext`part[$CellContext`$152, 855], 
+       $CellContext`sym[$CellContext`$1194, "+"], 
+       $CellContext`part[$CellContext`$167, 810], 
+       $CellContext`sym[$CellContext`$1195, "="], 
+       $CellContext`part[$CellContext`$153, 688], 
+       $CellContext`sym[$CellContext`$1196, "@"], 
+       $CellContext`part[$CellContext`$164, 208], 
+       $CellContext`sym[$CellContext`$1197, "*"], 
+       $CellContext`part[$CellContext`$156, 486], 
+       $CellContext`part[$CellContext`$176, 507], 
+       $CellContext`sym[$CellContext`$1198, "*"], 
+       $CellContext`part[$CellContext`$168, 428], 
+       $CellContext`part[$CellContext`$169, 461], 
+       $CellContext`sym[$CellContext`$1199, "*"], 
+       $CellContext`part[$CellContext`$157, 672], 
+       $CellContext`part[$CellContext`$158, 725], 
+       $CellContext`sym[$CellContext`$1200, "*"], 
+       $CellContext`part[$CellContext`$171, 590], 
+       $CellContext`part[$CellContext`$179, 61], 
+       $CellContext`sym[$CellContext`$1201, "*"], 
+       $CellContext`part[$CellContext`$160, 993], 
+       $CellContext`part[$CellContext`$180, 993], 
+       $CellContext`sym[$CellContext`$1202, "*"], 
+       $CellContext`part[$CellContext`$161, 906], 
+       $CellContext`sym[$CellContext`$1203, "*"], 
+       $CellContext`part[$CellContext`$162, 124], 
+       $CellContext`part[$CellContext`$181, 627], 
+       $CellContext`sym[$CellContext`$1204, "@"], 
+       $CellContext`part[$CellContext`$166, 298], 
+       $CellContext`sym[$CellContext`$1205, "*"], 
+       $CellContext`part[$CellContext`$174, 128], 
+       $CellContext`part[$CellContext`$183, 841], 
+       $CellContext`sym[$CellContext`$1206, "/"], 
+       $CellContext`part[$CellContext`$184, 105], 
+       $CellContext`sym[$CellContext`$1207, "@"], 
+       $CellContext`part[$CellContext`$177, 636], 
+       $CellContext`sym[$CellContext`$1208, "="], 
+       $CellContext`part[$CellContext`$170, 619], 
+       $CellContext`sym[$CellContext`$1209, "*"], 
+       $CellContext`part[$CellContext`$172, 636], 
+       $CellContext`part[$CellContext`$189, 194], 
+       $CellContext`sym[$CellContext`$1210, "="], 
+       $CellContext`part[$CellContext`$182, 796], 
+       $CellContext`sym[$CellContext`$1211, "*"], 
+       $CellContext`part[$CellContext`$173, 683], 
+       $CellContext`part[$CellContext`$190, 505], 
+       $CellContext`sym[$CellContext`$1212, "#"], 
+       $CellContext`part[$CellContext`$175, 524], 
+       $CellContext`sym[$CellContext`$1213, "="], 
+       $CellContext`part[$CellContext`$194, 58], 
+       $CellContext`sym[$CellContext`$1214, "#"], 
+       $CellContext`part[$CellContext`$178, 991], 
+       $CellContext`sym[$CellContext`$1215, "&"], 
+       $CellContext`part[$CellContext`$192, 442], 
+       $CellContext`sym[$CellContext`$1216, "*"], 
+       $CellContext`part[$CellContext`$193, 108], 
+       $CellContext`part[$CellContext`$199, 561], 
+       $CellContext`sym[$CellContext`$1217, "="], 
+       $CellContext`part[$CellContext`$185, 313], 
+       $CellContext`sym[$CellContext`$1218, "*"], 
+       $CellContext`part[$CellContext`$186, 555], 
+       $CellContext`part[$CellContext`$201, 766], 
+       $CellContext`sym[$CellContext`$1219, "*"], 
+       $CellContext`part[$CellContext`$187, 625], 
+       $CellContext`part[$CellContext`$202, 276], 
+       $CellContext`sym[$CellContext`$1220, "*"], 
+       $CellContext`part[$CellContext`$188, 963], 
+       $CellContext`part[$CellContext`$203, 370], 
+       $CellContext`sym[$CellContext`$1221, "*"], 
+       $CellContext`part[$CellContext`$197, 138], 
+       $CellContext`part[$CellContext`$198, 560], 
+       $CellContext`sym[$CellContext`$1222, "-"], 
+       $CellContext`part[$CellContext`$191, 841], 
+       $CellContext`sym[$CellContext`$1223, "*"], 
+       $CellContext`part[$CellContext`$200, 53], 
+       $CellContext`part[$CellContext`$206, 111], 
+       $CellContext`sym[$CellContext`$1224, "$"], 
+       $CellContext`part[$CellContext`$208, 446], 
+       $CellContext`sym[$CellContext`$1225, "#"], 
+       $CellContext`part[$CellContext`$195, 450], 
+       $CellContext`sym[$CellContext`$1226, "-"], 
+       $CellContext`part[$CellContext`$209, 372], 
+       $CellContext`sym[$CellContext`$1227, "%"], 
+       $CellContext`part[$CellContext`$196, 343], 
+       $CellContext`sym[$CellContext`$1228, "%"], 
+       $CellContext`part[$CellContext`$211, 136], 
+       $CellContext`sym[$CellContext`$1229, "@"], 
+       $CellContext`part[$CellContext`$217, 364], 
+       $CellContext`sym[$CellContext`$1230, "@"], 
+       $CellContext`part[$CellContext`$219, 440], 
+       $CellContext`sym[$CellContext`$1231, "/"], 
+       $CellContext`part[$CellContext`$204, 16], 
+       $CellContext`sym[$CellContext`$1232, "/"], 
+       $CellContext`part[$CellContext`$205, 825], 
+       $CellContext`sym[$CellContext`$1233, "*"], 
+       $CellContext`part[$CellContext`$210, 8], 
+       $CellContext`part[$CellContext`$221, 577], 
+       $CellContext`sym[$CellContext`$1234, "&"], 
+       $CellContext`part[$CellContext`$207, 561], 
+       $CellContext`sym[$CellContext`$1235, "*"], 
+       $CellContext`part[$CellContext`$222, 382], 
+       $CellContext`sym[$CellContext`$1236, "&"], 
+       $CellContext`part[$CellContext`$218, 31], 
+       $CellContext`sym[$CellContext`$1237, "$"], 
+       $CellContext`part[$CellContext`$220, 644], 
+       $CellContext`sym[$CellContext`$1238, "&"], 
+       $CellContext`part[$CellContext`$212, 758], 
+       $CellContext`sym[$CellContext`$1239, "*"], 
+       $CellContext`part[$CellContext`$213, 349], 
+       $CellContext`part[$CellContext`$225, 931], 
+       $CellContext`sym[$CellContext`$1240, "#"], 
+       $CellContext`part[$CellContext`$214, 666], 
+       $CellContext`sym[$CellContext`$1241, "*"], 
+       $CellContext`part[$CellContext`$215, 340], 
+       $CellContext`part[$CellContext`$226, 860], 
+       $CellContext`sym[$CellContext`$1242, "*"], 
+       $CellContext`part[$CellContext`$216, 214], 
+       $CellContext`part[$CellContext`$227, 400], 
+       $CellContext`sym[$CellContext`$1243, "*"], 
+       $CellContext`part[$CellContext`$230, 367], 
+       $CellContext`part[$CellContext`$231, 79], 
+       $CellContext`sym[$CellContext`$1244, "@"], 
+       $CellContext`part[$CellContext`$232, 192], 
+       $CellContext`sym[$CellContext`$1245, "*"], 
+       $CellContext`part[$CellContext`$223, 175], 
+       $CellContext`sym[$CellContext`$1246, "*"], 
+       $CellContext`part[$CellContext`$224, 84], 
+       $CellContext`part[$CellContext`$236, 32], 
+       $CellContext`sym[$CellContext`$1247, "/"], 
+       $CellContext`part[$CellContext`$229, 683], 
+       $CellContext`sym[$CellContext`$1248, "%"], 
+       $CellContext`part[$CellContext`$239, 475], 
+       $CellContext`sym[$CellContext`$1249, "*"], 
+       $CellContext`part[$CellContext`$228, 797], 
+       $CellContext`part[$CellContext`$241, 875], 
+       $CellContext`sym[$CellContext`$1250, "*"], 
+       $CellContext`part[$CellContext`$234, 320], 
+       $CellContext`part[$CellContext`$235, 634], 
+       $CellContext`sym[$CellContext`$1251, "$"], 
+       $CellContext`part[$CellContext`$247, 620], 
+       $CellContext`sym[$CellContext`$1252, "*"], 
+       $CellContext`part[$CellContext`$233, 897], 
+       $CellContext`part[$CellContext`$249, 330], 
+       $CellContext`sym[$CellContext`$1253, "*"], 
+       $CellContext`part[$CellContext`$237, 556], 
+       $CellContext`part[$CellContext`$254, 975], 
+       $CellContext`sym[$CellContext`$1254, "*"], 
+       $CellContext`part[$CellContext`$246, 462], 
+       $CellContext`part[$CellContext`$255, 750], 
+       $CellContext`sym[$CellContext`$1255, "&"], 
+       $CellContext`part[$CellContext`$256, 25], 
+       $CellContext`sym[$CellContext`$1256, "#"], 
+       $CellContext`part[$CellContext`$257, 521], 
+       $CellContext`sym[$CellContext`$1257, "*"], 
+       $CellContext`part[$CellContext`$238, 783], 
+       $CellContext`part[$CellContext`$258, 388], 
+       $CellContext`sym[$CellContext`$1258, "$"], 
+       $CellContext`part[$CellContext`$248, 293], 
+       $CellContext`sym[$CellContext`$1259, "*"], 
+       $CellContext`part[$CellContext`$240, 781], 
+       $CellContext`part[$CellContext`$260, 2], 
+       $CellContext`sym[$CellContext`$1260, "*"], 
+       $CellContext`part[$CellContext`$242, 891], 
+       $CellContext`part[$CellContext`$261, 519], 
+       $CellContext`sym[$CellContext`$1261, "*"], 
+       $CellContext`part[$CellContext`$243, 867], 
+       $CellContext`part[$CellContext`$263, 859], 
+       $CellContext`sym[$CellContext`$1262, "*"], 
+       $CellContext`part[$CellContext`$244, 322], 
+       $CellContext`part[$CellContext`$250, 26], 
+       $CellContext`sym[$CellContext`$1263, "%"], 
+       $CellContext`part[$CellContext`$265, 109], 
+       $CellContext`sym[$CellContext`$1264, "#"], 
+       $CellContext`part[$CellContext`$245, 318], 
+       $CellContext`sym[$CellContext`$1265, "&"], 
+       $CellContext`part[$CellContext`$266, 240], 
+       $CellContext`sym[$CellContext`$1266, "*"], 
+       $CellContext`part[$CellContext`$251, 668], 
+       $CellContext`part[$CellContext`$252, 205], 
+       $CellContext`sym[$CellContext`$1267, "*"], 
+       $CellContext`part[$CellContext`$264, 881], 
+       $CellContext`part[$CellContext`$267, 66], 
+       $CellContext`sym[$CellContext`$1268, "*"], 
+       $CellContext`part[$CellContext`$253, 32], 
+       $CellContext`part[$CellContext`$268, 27], 
+       $CellContext`sym[$CellContext`$1269, "*"], 
+       $CellContext`part[$CellContext`$259, 33], 
+       $CellContext`part[$CellContext`$274, 598], 
+       $CellContext`sym[$CellContext`$1270, "*"], 
+       $CellContext`part[$CellContext`$262, 717], 
+       $CellContext`sym[$CellContext`$1271, "*"], 
+       $CellContext`part[$CellContext`$270, 227], 
+       $CellContext`part[$CellContext`$279, 476], 
+       $CellContext`sym[$CellContext`$1272, "#"], 
+       $CellContext`part[$CellContext`$271, 968], 
+       $CellContext`sym[$CellContext`$1273, "$"], 
+       $CellContext`part[$CellContext`$272, 479], 
+       $CellContext`sym[$CellContext`$1274, "*"], 
+       $CellContext`part[$CellContext`$273, 91], 
+       $CellContext`sym[$CellContext`$1275, "%"], 
+       $CellContext`part[$CellContext`$281, 526], 
+       $CellContext`sym[$CellContext`$1276, "/"], 
+       $CellContext`part[$CellContext`$282, 90], 
+       $CellContext`sym[$CellContext`$1277, "@"], 
+       $CellContext`part[$CellContext`$283, 500], 
+       $CellContext`sym[$CellContext`$1278, "+"], 
+       $CellContext`part[$CellContext`$285, 206], 
+       $CellContext`sym[$CellContext`$1279, "*"], 
+       $CellContext`part[$CellContext`$269, 482], 
+       $CellContext`part[$CellContext`$286, 57], 
+       $CellContext`sym[$CellContext`$1280, "+"], 
+       $CellContext`part[$CellContext`$280, 13], 
+       $CellContext`sym[$CellContext`$1281, "+"], 
+       $CellContext`part[$CellContext`$275, 102], 
+       $CellContext`sym[$CellContext`$1282, "*"], 
+       $CellContext`part[$CellContext`$276, 184], 
+       $CellContext`part[$CellContext`$292, 88], 
+       $CellContext`sym[$CellContext`$1283, "$"], 
+       $CellContext`part[$CellContext`$277, 456], 
+       $CellContext`sym[$CellContext`$1284, "*"], 
+       $CellContext`part[$CellContext`$278, 385], 
+       $CellContext`part[$CellContext`$294, 115], 
+       $CellContext`sym[$CellContext`$1285, "*"], 
+       $CellContext`part[$CellContext`$295, 937], 
+       $CellContext`part[$CellContext`$296, 242], 
+       $CellContext`sym[$CellContext`$1286, "&"], 
+       $CellContext`part[$CellContext`$287, 53], 
+       $CellContext`sym[$CellContext`$1287, "*"], 
+       $CellContext`part[$CellContext`$288, 134], 
+       $CellContext`sym[$CellContext`$1288, "%"], 
+       $CellContext`part[$CellContext`$289, 784], 
+       $CellContext`sym[$CellContext`$1289, "="], 
+       $CellContext`part[$CellContext`$300, 140], 
+       $CellContext`sym[$CellContext`$1290, "*"], 
+       $CellContext`part[$CellContext`$284, 14], 
+       $CellContext`part[$CellContext`$301, 521], 
+       $CellContext`sym[$CellContext`$1291, "*"], 
+       $CellContext`part[$CellContext`$299, 568], 
+       $CellContext`part[$CellContext`$303, 462], 
+       $CellContext`sym[$CellContext`$1292, "#"], 
+       $CellContext`part[$CellContext`$304, 331], 
+       $CellContext`sym[$CellContext`$1293, "-"], 
+       $CellContext`part[$CellContext`$306, 90], 
+       $CellContext`sym[$CellContext`$1294, "="], 
+       $CellContext`part[$CellContext`$307, 829], 
+       $CellContext`sym[$CellContext`$1295, "*"], 
+       $CellContext`part[$CellContext`$290, 775], 
+       $CellContext`part[$CellContext`$291, 692], 
+       $CellContext`sym[$CellContext`$1296, "*"], 
+       $CellContext`part[$CellContext`$293, 873], 
+       $CellContext`part[$CellContext`$310, 787], 
+       $CellContext`sym[$CellContext`$1297, "*"], 
+       $CellContext`part[$CellContext`$297, 729], 
+       $CellContext`part[$CellContext`$312, 227], 
+       $CellContext`sym[$CellContext`$1298, "*"], 
+       $CellContext`part[$CellContext`$298, 342], 
+       $CellContext`part[$CellContext`$313, 413], 
+       $CellContext`sym[$CellContext`$1299, "$"], 
+       $CellContext`part[$CellContext`$315, 796], 
+       $CellContext`sym[$CellContext`$1300, "$"], 
+       $CellContext`part[$CellContext`$317, 277], 
+       $CellContext`sym[$CellContext`$1301, "="], 
+       $CellContext`part[$CellContext`$308, 262], 
+       $CellContext`sym[$CellContext`$1302, "*"], 
+       $CellContext`part[$CellContext`$311, 352], 
+       $CellContext`part[$CellContext`$318, 918], 
+       $CellContext`sym[$CellContext`$1303, "*"], 
+       $CellContext`part[$CellContext`$302, 185], 
+       $CellContext`part[$CellContext`$320, 120], 
+       $CellContext`sym[$CellContext`$1304, "&"], 
+       $CellContext`part[$CellContext`$322, 902], 
+       $CellContext`sym[$CellContext`$1305, "@"], 
+       $CellContext`part[$CellContext`$305, 337], 
+       $CellContext`sym[$CellContext`$1306, "="], 
+       $CellContext`part[$CellContext`$324, 150], 
+       $CellContext`sym[$CellContext`$1307, "*"], 
+       $CellContext`part[$CellContext`$309, 376], 
+       $CellContext`part[$CellContext`$325, 822], 
+       $CellContext`sym[$CellContext`$1308, "%"], 
+       $CellContext`part[$CellContext`$326, 721], 
+       $CellContext`sym[$CellContext`$1309, "*"], 
+       $CellContext`part[$CellContext`$314, 518], 
+       $CellContext`part[$CellContext`$328, 445], 
+       $CellContext`sym[$CellContext`$1310, "%"], 
+       $CellContext`part[$CellContext`$329, 132], 
+       $CellContext`sym[$CellContext`$1311, "*"], 
+       $CellContext`part[$CellContext`$316, 346], 
+       $CellContext`part[$CellContext`$331, 770], 
+       $CellContext`sym[$CellContext`$1312, "*"], 
+       $CellContext`part[$CellContext`$319, 902], 
+       $CellContext`part[$CellContext`$333, 674], 
+       $CellContext`sym[$CellContext`$1313, "*"], 
+       $CellContext`part[$CellContext`$321, 320], 
+       $CellContext`part[$CellContext`$335, 746], 
+       $CellContext`sym[$CellContext`$1314, "*"], 
+       $CellContext`part[$CellContext`$327, 3], 
+       $CellContext`part[$CellContext`$336, 403], 
+       $CellContext`sym[$CellContext`$1315, "*"], 
+       $CellContext`part[$CellContext`$323, 488], 
+       $CellContext`part[$CellContext`$337, 771], 
+       $CellContext`sym[$CellContext`$1316, "*"], 
+       $CellContext`part[$CellContext`$330, 71], 
+       $CellContext`part[$CellContext`$342, 927], 
+       $CellContext`sym[$CellContext`$1317, "$"], 
+       $CellContext`part[$CellContext`$343, 577], 
+       $CellContext`sym[$CellContext`$1318, "*"], 
+       $CellContext`part[$CellContext`$332, 150], 
+       $CellContext`part[$CellContext`$344, 763], 
+       $CellContext`sym[$CellContext`$1319, "-"], 
+       $CellContext`part[$CellContext`$334, 924], 
+       $CellContext`sym[$CellContext`$1320, "/"], 
+       $CellContext`part[$CellContext`$350, 707], 
+       $CellContext`sym[$CellContext`$1321, "*"], 
+       $CellContext`part[$CellContext`$338, 110], 
+       $CellContext`part[$CellContext`$352, 301], 
+       $CellContext`sym[$CellContext`$1322, "*"], 
+       $CellContext`part[$CellContext`$339, 63], 
+       $CellContext`part[$CellContext`$353, 702], 
+       $CellContext`sym[$CellContext`$1323, "*"], 
+       $CellContext`part[$CellContext`$346, 320], 
+       $CellContext`part[$CellContext`$354, 943], 
+       $CellContext`sym[$CellContext`$1324, "/"], 
+       $CellContext`part[$CellContext`$355, 431], 
+       $CellContext`sym[$CellContext`$1325, "*"], 
+       $CellContext`part[$CellContext`$340, 651], 
+       $CellContext`part[$CellContext`$358, 756], 
+       $CellContext`sym[$CellContext`$1326, "/"], 
+       $CellContext`part[$CellContext`$362, 965], 
+       $CellContext`sym[$CellContext`$1327, "*"], 
+       $CellContext`part[$CellContext`$341, 729], 
+       $CellContext`part[$CellContext`$364, 406], 
+       $CellContext`sym[$CellContext`$1328, "*"], 
+       $CellContext`part[$CellContext`$345, 55], 
+       $CellContext`part[$CellContext`$366, 720], 
+       $CellContext`sym[$CellContext`$1329, "+"], 
+       $CellContext`part[$CellContext`$347, 674], 
+       $CellContext`sym[$CellContext`$1330, "#"], 
+       $CellContext`part[$CellContext`$348, 962], 
+       $CellContext`sym[$CellContext`$1331, "="], 
+       $CellContext`part[$CellContext`$349, 421], 
+       $CellContext`sym[$CellContext`$1332, "*"], 
+       $CellContext`part[$CellContext`$361, 579], 
+       $CellContext`sym[$CellContext`$1333, "*"], 
+       $CellContext`part[$CellContext`$351, 222], 
+       $CellContext`part[$CellContext`$368, 839], 
+       $CellContext`sym[$CellContext`$1334, "#"], 
+       $CellContext`part[$CellContext`$369, 449], 
+       $CellContext`sym[$CellContext`$1335, "*"], 
+       $CellContext`part[$CellContext`$370, 210], 
+       $CellContext`sym[$CellContext`$1336, "*"], 
+       $CellContext`part[$CellContext`$356, 59], 
+       $CellContext`part[$CellContext`$357, 600], 
+       $CellContext`sym[$CellContext`$1337, "@"], 
+       $CellContext`part[$CellContext`$359, 593], 
+       $CellContext`sym[$CellContext`$1338, "@"], 
+       $CellContext`part[$CellContext`$360, 352], 
+       $CellContext`sym[$CellContext`$1339, "*"], 
+       $CellContext`part[$CellContext`$363, 669], 
+       $CellContext`part[$CellContext`$375, 350], 
+       $CellContext`sym[$CellContext`$1340, "*"], 
+       $CellContext`part[$CellContext`$365, 704], 
+       $CellContext`part[$CellContext`$376, 831], 
+       $CellContext`sym[$CellContext`$1341, "="], 
+       $CellContext`part[$CellContext`$372, 84], 
+       $CellContext`sym[$CellContext`$1342, "-"], 
+       $CellContext`part[$CellContext`$367, 333], 
+       $CellContext`sym[$CellContext`$1343, "*"], 
+       $CellContext`part[$CellContext`$371, 219], 
+       $CellContext`part[$CellContext`$381, 889], 
+       $CellContext`sym[$CellContext`$1344, "*"], 
+       $CellContext`part[$CellContext`$373, 842], 
+       $CellContext`part[$CellContext`$382, 86], 
+       $CellContext`sym[$CellContext`$1345, "&"], 
+       $CellContext`part[$CellContext`$374, 582], 
+       $CellContext`sym[$CellContext`$1346, "#"], 
+       $CellContext`part[$CellContext`$377, 835], 
+       $CellContext`sym[$CellContext`$1347, "+"], 
+       $CellContext`part[$CellContext`$378, 184], 
+       $CellContext`sym[$CellContext`$1348, "*"], 
+       $CellContext`part[$CellContext`$379, 755], 
+       $CellContext`part[$CellContext`$388, 433], 
+       $CellContext`sym[$CellContext`$1349, "*"], 
+       $CellContext`part[$CellContext`$380, 22], 
+       $CellContext`part[$CellContext`$389, 619], 
+       $CellContext`sym[$CellContext`$1350, "*"], 
+       $CellContext`part[$CellContext`$391, 161], 
+       $CellContext`sym[$CellContext`$1351, "+"], 
+       $CellContext`part[$CellContext`$392, 493], 
+       $CellContext`sym[$CellContext`$1352, "*"], 
+       $CellContext`part[$CellContext`$383, 625], 
+       $CellContext`part[$CellContext`$396, 819], 
+       $CellContext`sym[$CellContext`$1353, "*"], 
+       $CellContext`part[$CellContext`$384, 547], 
+       $CellContext`part[$CellContext`$399, 854], 
+       $CellContext`sym[$CellContext`$1354, "+"], 
+       $CellContext`part[$CellContext`$385, 549], 
+       $CellContext`sym[$CellContext`$1355, "*"], 
+       $CellContext`part[$CellContext`$386, 975], 
+       $CellContext`part[$CellContext`$401, 812], 
+       $CellContext`sym[$CellContext`$1356, "*"], 
+       $CellContext`part[$CellContext`$387, 285], 
+       $CellContext`part[$CellContext`$402, 933], 
+       $CellContext`sym[$CellContext`$1357, "-"], 
+       $CellContext`part[$CellContext`$408, 530], 
+       $CellContext`sym[$CellContext`$1358, "*"], 
+       $CellContext`part[$CellContext`$390, 204], 
+       $CellContext`part[$CellContext`$411, 810], 
+       $CellContext`sym[$CellContext`$1359, "/"], 
+       $CellContext`part[$CellContext`$393, 896], 
+       $CellContext`sym[$CellContext`$1360, "*"], 
+       $CellContext`part[$CellContext`$394, 576], 
+       $CellContext`part[$CellContext`$413, 880], 
+       $CellContext`sym[$CellContext`$1361, "*"], 
+       $CellContext`part[$CellContext`$395, 902], 
+       $CellContext`part[$CellContext`$414, 359], 
+       $CellContext`sym[$CellContext`$1362, "*"], 
+       $CellContext`part[$CellContext`$397, 362], 
+       $CellContext`part[$CellContext`$417, 206], 
+       $CellContext`sym[$CellContext`$1363, "+"], 
+       $CellContext`part[$CellContext`$398, 373], 
+       $CellContext`sym[$CellContext`$1364, "$"], 
+       $CellContext`part[$CellContext`$406, 172], 
+       $CellContext`sym[$CellContext`$1365, "$"], 
+       $CellContext`part[$CellContext`$418, 519], 
+       $CellContext`sym[$CellContext`$1366, "+"], 
+       $CellContext`part[$CellContext`$400, 272], 
+       $CellContext`sym[$CellContext`$1367, "="], 
+       $CellContext`part[$CellContext`$403, 447], 
+       $CellContext`sym[$CellContext`$1368, "="], 
+       $CellContext`part[$CellContext`$404, 950], 
+       $CellContext`sym[$CellContext`$1369, "*"], 
+       $CellContext`part[$CellContext`$405, 124], 
+       $CellContext`sym[$CellContext`$1370, "#"], 
+       $CellContext`part[$CellContext`$415, 242], 
+       $CellContext`sym[$CellContext`$1371, "*"], 
+       $CellContext`part[$CellContext`$407, 139], 
+       $CellContext`part[$CellContext`$422, 943], 
+       $CellContext`sym[$CellContext`$1372, "+"], 
+       $CellContext`part[$CellContext`$409, 844], 
+       $CellContext`sym[$CellContext`$1373, "*"], 
+       $CellContext`part[$CellContext`$410, 486], 
+       $CellContext`part[$CellContext`$424, 116], 
+       $CellContext`sym[$CellContext`$1374, "&"], 
+       $CellContext`part[$CellContext`$412, 826], 
+       $CellContext`sym[$CellContext`$1375, "@"], 
+       $CellContext`part[$CellContext`$429, 790], 
+       $CellContext`sym[$CellContext`$1376, "*"], 
+       $CellContext`part[$CellContext`$416, 432], 
+       $CellContext`part[$CellContext`$432, 180], 
+       $CellContext`sym[$CellContext`$1377, "*"], 
+       $CellContext`part[$CellContext`$425, 421], 
+       $CellContext`part[$CellContext`$434, 135], 
+       $CellContext`sym[$CellContext`$1378, "-"], 
+       $CellContext`part[$CellContext`$426, 984], 
+       $CellContext`sym[$CellContext`$1379, "="], 
+       $CellContext`part[$CellContext`$435, 88], 
+       $CellContext`sym[$CellContext`$1380, "*"], 
+       $CellContext`part[$CellContext`$419, 805], 
+       $CellContext`part[$CellContext`$436, 417], 
+       $CellContext`sym[$CellContext`$1381, "#"], 
+       $CellContext`part[$CellContext`$420, 66], 
+       $CellContext`sym[$CellContext`$1382, "+"], 
+       $CellContext`part[$CellContext`$437, 576], 
+       $CellContext`sym[$CellContext`$1383, "*"], 
+       $CellContext`part[$CellContext`$428, 566], 
+       $CellContext`sym[$CellContext`$1384, "$"], 
+       $CellContext`part[$CellContext`$438, 138], 
+       $CellContext`sym[$CellContext`$1385, "*"], 
+       $CellContext`part[$CellContext`$421, 859], 
+       $CellContext`part[$CellContext`$439, 314], 
+       $CellContext`sym[$CellContext`$1386, "*"], 
+       $CellContext`part[$CellContext`$423, 742], 
+       $CellContext`part[$CellContext`$440, 670], 
+       $CellContext`sym[$CellContext`$1387, "+"], 
+       $CellContext`part[$CellContext`$427, 559], 
+       $CellContext`sym[$CellContext`$1388, "*"], 
+       $CellContext`part[$CellContext`$430, 372], 
+       $CellContext`part[$CellContext`$444, 369], 
+       $CellContext`sym[$CellContext`$1389, "-"], 
+       $CellContext`part[$CellContext`$431, 307], 
+       $CellContext`sym[$CellContext`$1390, "*"], 
+       $CellContext`part[$CellContext`$433, 532], 
+       $CellContext`part[$CellContext`$447, 221], 
+       $CellContext`sym[$CellContext`$1391, "="], 
+       $CellContext`part[$CellContext`$452, 42], 
+       $CellContext`sym[$CellContext`$1392, "#"], 
+       $CellContext`part[$CellContext`$445, 372], 
+       $CellContext`sym[$CellContext`$1393, "*"], 
+       $CellContext`part[$CellContext`$441, 893], 
+       $CellContext`part[$CellContext`$455, 593], 
+       $CellContext`sym[$CellContext`$1394, "*"], 
+       $CellContext`part[$CellContext`$451, 897], 
+       $CellContext`sym[$CellContext`$1395, "@"], 
+       $CellContext`part[$CellContext`$442, 565], 
+       $CellContext`sym[$CellContext`$1396, "*"], 
+       $CellContext`part[$CellContext`$443, 985], 
+       $CellContext`part[$CellContext`$456, 414], 
+       $CellContext`sym[$CellContext`$1397, "*"], 
+       $CellContext`part[$CellContext`$446, 868], 
+       $CellContext`sym[$CellContext`$1398, "-"], 
+       $CellContext`part[$CellContext`$453, 24], 
+       $CellContext`sym[$CellContext`$1399, "*"], 
+       $CellContext`part[$CellContext`$448, 168], 
+       $CellContext`part[$CellContext`$460, 468], 
+       $CellContext`sym[$CellContext`$1400, "*"], 
+       $CellContext`part[$CellContext`$449, 128], 
+       $CellContext`part[$CellContext`$461, 362], 
+       $CellContext`sym[$CellContext`$1401, "*"], 
+       $CellContext`part[$CellContext`$450, 962], 
+       $CellContext`part[$CellContext`$463, 802], 
+       $CellContext`sym[$CellContext`$1402, "+"], 
+       $CellContext`part[$CellContext`$458, 179], 
+       $CellContext`sym[$CellContext`$1403, "$"], 
+       $CellContext`part[$CellContext`$466, 257], 
+       $CellContext`sym[$CellContext`$1404, "="], 
+       $CellContext`part[$CellContext`$467, 386], 
+       $CellContext`sym[$CellContext`$1405, "="], 
+       $CellContext`part[$CellContext`$468, 262], 
+       $CellContext`sym[$CellContext`$1406, "*"], 
+       $CellContext`part[$CellContext`$454, 382], 
+       $CellContext`part[$CellContext`$470, 852], 
+       $CellContext`sym[$CellContext`$1407, "*"], 
+       $CellContext`part[$CellContext`$457, 165], 
+       $CellContext`part[$CellContext`$474, 945], 
+       $CellContext`sym[$CellContext`$1408, "/"], 
+       $CellContext`part[$CellContext`$459, 42], 
+       $CellContext`sym[$CellContext`$1409, "*"], 
+       $CellContext`part[$CellContext`$462, 39], 
+       $CellContext`part[$CellContext`$480, 800], 
+       $CellContext`sym[$CellContext`$1410, "/"], 
+       $CellContext`part[$CellContext`$464, 339], 
+       $CellContext`sym[$CellContext`$1411, "*"], 
+       $CellContext`part[$CellContext`$475, 983], 
+       $CellContext`part[$CellContext`$476, 604], 
+       $CellContext`sym[$CellContext`$1412, "*"], 
+       $CellContext`part[$CellContext`$465, 240], 
+       $CellContext`part[$CellContext`$477, 997], 
+       $CellContext`sym[$CellContext`$1413, "*"], 
+       $CellContext`part[$CellContext`$469, 556], 
+       $CellContext`part[$CellContext`$482, 55], 
+       $CellContext`sym[$CellContext`$1414, "*"], 
+       $CellContext`part[$CellContext`$483, 521], 
+       $CellContext`sym[$CellContext`$1415, "*"], 
+       $CellContext`part[$CellContext`$471, 670], 
+       $CellContext`part[$CellContext`$484, 394], 
+       $CellContext`sym[$CellContext`$1416, "#"], 
+       $CellContext`part[$CellContext`$485, 142], 
+       $CellContext`sym[$CellContext`$1417, "*"], 
+       $CellContext`part[$CellContext`$472, 872], 
+       $CellContext`part[$CellContext`$486, 672], 
+       $CellContext`sym[$CellContext`$1418, "#"], 
+       $CellContext`part[$CellContext`$473, 480], 
+       $CellContext`sym[$CellContext`$1419, "%"], 
+       $CellContext`part[$CellContext`$491, 614], 
+       $CellContext`sym[$CellContext`$1420, "*"], 
+       $CellContext`part[$CellContext`$478, 182], 
+       $CellContext`part[$CellContext`$492, 386], 
+       $CellContext`sym[$CellContext`$1421, "#"], 
+       $CellContext`part[$CellContext`$495, 273], 
+       $CellContext`sym[$CellContext`$1422, "*"], 
+       $CellContext`part[$CellContext`$479, 916], 
+       $CellContext`part[$CellContext`$497, 70], 
+       $CellContext`sym[$CellContext`$1423, "-"], 
+       $CellContext`part[$CellContext`$500, 606], 
+       $CellContext`sym[$CellContext`$1424, "&"], 
+       $CellContext`part[$CellContext`$501, 430], 
+       $CellContext`sym[$CellContext`$1425, "@"], 
+       $CellContext`part[$CellContext`$481, 927], 
+       $CellContext`sym[$CellContext`$1426, "*"], 
+       $CellContext`part[$CellContext`$487, 967], 
+       $CellContext`part[$CellContext`$507, 719], 
+       $CellContext`sym[$CellContext`$1427, "*"], 
+       $CellContext`part[$CellContext`$488, 107], 
+       $CellContext`part[$CellContext`$508, 762], 
+       $CellContext`sym[$CellContext`$1428, "*"], 
+       $CellContext`part[$CellContext`$489, 785], 
+       $CellContext`part[$CellContext`$490, 208], 
+       $CellContext`sym[$CellContext`$1429, "*"], 
+       $CellContext`part[$CellContext`$493, 975], 
+       $CellContext`part[$CellContext`$510, 343], 
+       $CellContext`sym[$CellContext`$1430, "="], 
+       $CellContext`part[$CellContext`$511, 498], 
+       $CellContext`sym[$CellContext`$1431, "*"], 
+       $CellContext`part[$CellContext`$494, 923], 
+       $CellContext`part[$CellContext`$512, 291], 
+       $CellContext`sym[$CellContext`$1432, "*"], 
+       $CellContext`part[$CellContext`$496, 146], 
+       $CellContext`part[$CellContext`$513, 654], 
+       $CellContext`sym[$CellContext`$1433, "="], 
+       $CellContext`part[$CellContext`$514, 592], 
+       $CellContext`sym[$CellContext`$1434, "*"], 
+       $CellContext`part[$CellContext`$504, 157], 
+       $CellContext`part[$CellContext`$505, 334], 
+       $CellContext`sym[$CellContext`$1435, "*"], 
+       $CellContext`part[$CellContext`$506, 675], 
+       $CellContext`part[$CellContext`$515, 54], 
+       $CellContext`sym[$CellContext`$1436, "="], 
+       $CellContext`part[$CellContext`$516, 500], 
+       $CellContext`sym[$CellContext`$1437, "*"], 
+       $CellContext`part[$CellContext`$498, 177], 
+       $CellContext`part[$CellContext`$517, 772], 
+       $CellContext`sym[$CellContext`$1438, "+"], 
+       $CellContext`part[$CellContext`$499, 550], 
+       $CellContext`sym[$CellContext`$1439, "*"], 
+       $CellContext`part[$CellContext`$502, 35], 
+       $CellContext`part[$CellContext`$519, 357], 
+       $CellContext`sym[$CellContext`$1440, "*"], 
+       $CellContext`part[$CellContext`$503, 707], 
+       $CellContext`part[$CellContext`$522, 455], 
+       $CellContext`sym[$CellContext`$1441, "*"], 
+       $CellContext`part[$CellContext`$509, 960], 
+       $CellContext`part[$CellContext`$526, 386], 
+       $CellContext`sym[$CellContext`$1442, "$"], 
+       $CellContext`part[$CellContext`$528, 948], 
+       $CellContext`sym[$CellContext`$1443, "*"], 
+       $CellContext`part[$CellContext`$523, 381], 
+       $CellContext`part[$CellContext`$529, 914], 
+       $CellContext`sym[$CellContext`$1444, "*"], 
+       $CellContext`part[$CellContext`$524, 117], 
+       $CellContext`part[$CellContext`$530, 514], 
+       $CellContext`sym[$CellContext`$1445, "/"], 
+       $CellContext`part[$CellContext`$527, 258], 
+       $CellContext`sym[$CellContext`$1446, "*"], 
+       $CellContext`part[$CellContext`$518, 252], 
+       $CellContext`part[$CellContext`$533, 274], 
+       $CellContext`sym[$CellContext`$1447, "*"], 
+       $CellContext`part[$CellContext`$535, 56], 
+       $CellContext`part[$CellContext`$536, 94], 
+       $CellContext`sym[$CellContext`$1448, "*"], 
+       $CellContext`part[$CellContext`$520, 778], 
+       $CellContext`part[$CellContext`$538, 250], 
+       $CellContext`sym[$CellContext`$1449, "*"], 
+       $CellContext`part[$CellContext`$521, 273], 
+       $CellContext`part[$CellContext`$539, 484], 
+       $CellContext`sym[$CellContext`$1450, "/"], 
+       $CellContext`part[$CellContext`$525, 388], 
+       $CellContext`sym[$CellContext`$1451, "-"], 
+       $CellContext`part[$CellContext`$542, 115], 
+       $CellContext`sym[$CellContext`$1452, "*"], 
+       $CellContext`part[$CellContext`$531, 476], 
+       $CellContext`part[$CellContext`$541, 451], 
+       $CellContext`sym[$CellContext`$1453, "*"], 
+       $CellContext`part[$CellContext`$532, 975], 
+       $CellContext`part[$CellContext`$549, 954], 
+       $CellContext`sym[$CellContext`$1454, "*"], 
+       $CellContext`part[$CellContext`$534, 119], 
+       $CellContext`part[$CellContext`$551, 523], 
+       $CellContext`sym[$CellContext`$1455, "-"], 
+       $CellContext`part[$CellContext`$537, 390], 
+       $CellContext`sym[$CellContext`$1456, "*"], 
+       $CellContext`part[$CellContext`$540, 723], 
+       $CellContext`part[$CellContext`$543, 818], 
+       $CellContext`sym[$CellContext`$1457, "*"], 
+       $CellContext`part[$CellContext`$544, 401], 
+       $CellContext`part[$CellContext`$545, 240], 
+       $CellContext`sym[$CellContext`$1458, "#"], 
+       $CellContext`part[$CellContext`$555, 989], 
+       $CellContext`sym[$CellContext`$1459, "*"], 
+       $CellContext`part[$CellContext`$546, 205], 
+       $CellContext`part[$CellContext`$558, 592], 
+       $CellContext`sym[$CellContext`$1460, "-"], 
+       $CellContext`part[$CellContext`$547, 228], 
+       $CellContext`sym[$CellContext`$1461, "*"], 
+       $CellContext`part[$CellContext`$548, 102], 
+       $CellContext`sym[$CellContext`$1462, "+"], 
+       $CellContext`part[$CellContext`$562, 233], 
+       $CellContext`sym[$CellContext`$1463, "*"], 
+       $CellContext`part[$CellContext`$550, 863], 
+       $CellContext`part[$CellContext`$563, 27], 
+       $CellContext`sym[$CellContext`$1464, "*"], 
+       $CellContext`part[$CellContext`$552, 613], 
+       $CellContext`part[$CellContext`$565, 230], 
+       $CellContext`sym[$CellContext`$1465, "*"], 
+       $CellContext`part[$CellContext`$553, 844], 
+       $CellContext`part[$CellContext`$566, 311], 
+       $CellContext`sym[$CellContext`$1466, "="], 
+       $CellContext`part[$CellContext`$559, 456], 
+       $CellContext`sym[$CellContext`$1467, "*"], 
+       $CellContext`part[$CellContext`$554, 35], 
+       $CellContext`part[$CellContext`$570, 798], 
+       $CellContext`sym[$CellContext`$1468, "@"], 
+       $CellContext`part[$CellContext`$571, 699], 
+       $CellContext`sym[$CellContext`$1469, "*"], 
+       $CellContext`part[$CellContext`$556, 827], 
+       $CellContext`part[$CellContext`$574, 246], 
+       $CellContext`sym[$CellContext`$1470, "="], 
+       $CellContext`part[$CellContext`$557, 702], 
+       $CellContext`sym[$CellContext`$1471, "%"], 
+       $CellContext`part[$CellContext`$560, 385], 
+       $CellContext`sym[$CellContext`$1472, "="], 
+       $CellContext`part[$CellContext`$561, 78], 
+       $CellContext`sym[$CellContext`$1473, "*"], 
+       $CellContext`part[$CellContext`$564, 574], 
+       $CellContext`part[$CellContext`$577, 171], 
+       $CellContext`sym[$CellContext`$1474, "*"], 
+       $CellContext`part[$CellContext`$567, 326], 
+       $CellContext`part[$CellContext`$580, 378], 
+       $CellContext`sym[$CellContext`$1475, "*"], 
+       $CellContext`part[$CellContext`$568, 617], 
+       $CellContext`part[$CellContext`$581, 624], 
+       $CellContext`sym[$CellContext`$1476, "*"], 
+       $CellContext`part[$CellContext`$569, 585], 
+       $CellContext`sym[$CellContext`$1477, "="], 
+       $CellContext`part[$CellContext`$585, 634], 
+       $CellContext`sym[$CellContext`$1478, "%"], 
+       $CellContext`part[$CellContext`$572, 687], 
+       $CellContext`sym[$CellContext`$1479, "*"], 
+       $CellContext`part[$CellContext`$573, 662], 
+       $CellContext`part[$CellContext`$588, 960], 
+       $CellContext`sym[$CellContext`$1480, "*"], 
+       $CellContext`part[$CellContext`$575, 61], 
+       $CellContext`part[$CellContext`$590, 969], 
+       $CellContext`sym[$CellContext`$1481, "%"], 
+       $CellContext`part[$CellContext`$591, 738], 
+       $CellContext`sym[$CellContext`$1482, "*"], 
+       $CellContext`part[$CellContext`$582, 836], 
+       $CellContext`part[$CellContext`$583, 742], 
+       $CellContext`sym[$CellContext`$1483, "="], 
+       $CellContext`part[$CellContext`$576, 361], 
+       $CellContext`sym[$CellContext`$1484, "/"], 
+       $CellContext`part[$CellContext`$592, 919], 
+       $CellContext`sym[$CellContext`$1485, "#"], 
+       $CellContext`part[$CellContext`$593, 78], 
+       $CellContext`sym[$CellContext`$1486, "/"], 
+       $CellContext`part[$CellContext`$594, 773], 
+       $CellContext`sym[$CellContext`$1487, "*"], 
+       $CellContext`part[$CellContext`$586, 893], 
+       $CellContext`part[$CellContext`$587, 106], 
+       $CellContext`sym[$CellContext`$1488, "-"], 
+       $CellContext`part[$CellContext`$595, 654], 
+       $CellContext`sym[$CellContext`$1489, "*"], 
+       $CellContext`part[$CellContext`$578, 380], 
+       $CellContext`part[$CellContext`$596, 414], 
+       $CellContext`sym[$CellContext`$1490, "*"], 
+       $CellContext`part[$CellContext`$579, 786], 
+       $CellContext`part[$CellContext`$589, 121], 
+       $CellContext`sym[$CellContext`$1491, "%"], 
+       $CellContext`part[$CellContext`$597, 297], 
+       $CellContext`sym[$CellContext`$1492, "*"], 
+       $CellContext`part[$CellContext`$584, 195], 
+       $CellContext`part[$CellContext`$599, 718], 
+       $CellContext`sym[$CellContext`$1493, "="], 
+       $CellContext`part[$CellContext`$602, 825], 
+       $CellContext`sym[$CellContext`$1494, "="], 
+       $CellContext`part[$CellContext`$607, 892], 
+       $CellContext`sym[$CellContext`$1495, "+"], 
+       $CellContext`part[$CellContext`$601, 881], 
+       $CellContext`sym[$CellContext`$1496, "/"], 
+       $CellContext`part[$CellContext`$609, 948], 
+       $CellContext`sym[$CellContext`$1497, "@"], 
+       $CellContext`part[$CellContext`$598, 718], 
+       $CellContext`sym[$CellContext`$1498, "*"], 
+       $CellContext`part[$CellContext`$600, 446], 
+       $CellContext`part[$CellContext`$614, 483], 
+       $CellContext`sym[$CellContext`$1499, "*"], 
+       $CellContext`part[$CellContext`$603, 870], 
+       $CellContext`part[$CellContext`$615, 896], 
+       $CellContext`sym[$CellContext`$1500, "*"], 
+       $CellContext`part[$CellContext`$604, 341], 
+       $CellContext`part[$CellContext`$616, 241], 
+       $CellContext`sym[$CellContext`$1501, "*"], 
+       $CellContext`part[$CellContext`$617, 494], 
+       $CellContext`sym[$CellContext`$1502, "$"], 
+       $CellContext`part[$CellContext`$605, 165], 
+       $CellContext`sym[$CellContext`$1503, "*"], 
+       $CellContext`part[$CellContext`$606, 466], 
+       $CellContext`part[$CellContext`$619, 761], 
+       $CellContext`sym[$CellContext`$1504, "&"], 
+       $CellContext`part[$CellContext`$608, 296], 
+       $CellContext`sym[$CellContext`$1505, "*"], 
+       $CellContext`part[$CellContext`$622, 54], 
+       $CellContext`sym[$CellContext`$1506, "&"], 
+       $CellContext`part[$CellContext`$624, 588], 
+       $CellContext`sym[$CellContext`$1507, "*"], 
+       $CellContext`part[$CellContext`$610, 748], 
+       $CellContext`part[$CellContext`$625, 481], 
+       $CellContext`sym[$CellContext`$1508, "="], 
+       $CellContext`part[$CellContext`$626, 203], 
+       $CellContext`sym[$CellContext`$1509, "@"], 
+       $CellContext`part[$CellContext`$627, 37], 
+       $CellContext`sym[$CellContext`$1510, "@"], 
+       $CellContext`part[$CellContext`$618, 821], 
+       $CellContext`sym[$CellContext`$1511, "*"], 
+       $CellContext`part[$CellContext`$611, 99], 
+       $CellContext`part[$CellContext`$631, 80], 
+       $CellContext`sym[$CellContext`$1512, "-"], 
+       $CellContext`part[$CellContext`$612, 707], 
+       $CellContext`sym[$CellContext`$1513, "*"], 
+       $CellContext`part[$CellContext`$613, 339], 
+       $CellContext`part[$CellContext`$632, 857], 
+       $CellContext`sym[$CellContext`$1514, "$"], 
+       $CellContext`part[$CellContext`$620, 329], 
+       $CellContext`sym[$CellContext`$1515, "+"], 
+       $CellContext`part[$CellContext`$633, 689], 
+       $CellContext`sym[$CellContext`$1516, "+"], 
+       $CellContext`part[$CellContext`$621, 24], 
+       $CellContext`sym[$CellContext`$1517, "="], 
+       $CellContext`part[$CellContext`$638, 62], 
+       $CellContext`sym[$CellContext`$1518, "*"], 
+       $CellContext`part[$CellContext`$623, 202], 
+       $CellContext`part[$CellContext`$639, 14], 
+       $CellContext`sym[$CellContext`$1519, "#"], 
+       $CellContext`part[$CellContext`$641, 149], 
+       $CellContext`sym[$CellContext`$1520, "*"], 
+       $CellContext`part[$CellContext`$635, 794], 
+       $CellContext`part[$CellContext`$642, 492], 
+       $CellContext`sym[$CellContext`$1521, "*"], 
+       $CellContext`part[$CellContext`$628, 90], 
+       $CellContext`part[$CellContext`$643, 842], 
+       $CellContext`sym[$CellContext`$1522, "*"], 
+       $CellContext`part[$CellContext`$629, 390], 
+       $CellContext`sym[$CellContext`$1523, "@"], 
+       $CellContext`part[$CellContext`$630, 171], 
+       $CellContext`sym[$CellContext`$1524, "*"], 
+       $CellContext`part[$CellContext`$636, 233], 
+       $CellContext`part[$CellContext`$637, 503], 
+       $CellContext`sym[$CellContext`$1525, "%"], 
+       $CellContext`part[$CellContext`$634, 930], 
+       $CellContext`sym[$CellContext`$1526, "%"], 
+       $CellContext`part[$CellContext`$647, 265], 
+       $CellContext`sym[$CellContext`$1527, "*"], 
+       $CellContext`part[$CellContext`$648, 628], 
+       $CellContext`part[$CellContext`$649, 9], 
+       $CellContext`sym[$CellContext`$1528, "+"], 
+       $CellContext`part[$CellContext`$650, 813], 
+       $CellContext`sym[$CellContext`$1529, "%"], 
+       $CellContext`part[$CellContext`$640, 438], 
+       $CellContext`sym[$CellContext`$1530, "/"], 
+       $CellContext`part[$CellContext`$659, 214], 
+       $CellContext`sym[$CellContext`$1531, "*"], 
+       $CellContext`part[$CellContext`$651, 671], 
+       $CellContext`part[$CellContext`$660, 22], 
+       $CellContext`sym[$CellContext`$1532, "*"], 
+       $CellContext`part[$CellContext`$644, 721], 
+       $CellContext`part[$CellContext`$661, 740], 
+       $CellContext`sym[$CellContext`$1533, "*"], 
+       $CellContext`part[$CellContext`$653, 903], 
+       $CellContext`part[$CellContext`$654, 974], 
+       $CellContext`sym[$CellContext`$1534, "*"], 
+       $CellContext`part[$CellContext`$645, 301], 
+       $CellContext`part[$CellContext`$662, 825], 
+       $CellContext`sym[$CellContext`$1535, "*"], 
+       $CellContext`part[$CellContext`$646, 958], 
+       $CellContext`part[$CellContext`$663, 612], 
+       $CellContext`sym[$CellContext`$1536, "$"], 
+       $CellContext`part[$CellContext`$664, 740], 
+       $CellContext`sym[$CellContext`$1537, "*"], 
+       $CellContext`part[$CellContext`$652, 518], 
+       $CellContext`part[$CellContext`$667, 665], 
+       $CellContext`sym[$CellContext`$1538, "&"], 
+       $CellContext`part[$CellContext`$655, 120], 
+       $CellContext`sym[$CellContext`$1539, "*"], 
+       $CellContext`part[$CellContext`$656, 269], 
+       $CellContext`part[$CellContext`$669, 831], 
+       $CellContext`sym[$CellContext`$1540, "*"], 
+       $CellContext`part[$CellContext`$657, 560], 
+       $CellContext`part[$CellContext`$670, 487], 
+       $CellContext`sym[$CellContext`$1541, "/"], 
+       $CellContext`part[$CellContext`$671, 432], 
+       $CellContext`sym[$CellContext`$1542, "+"], 
+       $CellContext`part[$CellContext`$658, 907], 
+       $CellContext`sym[$CellContext`$1543, "#"], 
+       $CellContext`part[$CellContext`$676, 318], 
+       $CellContext`sym[$CellContext`$1544, "$"], 
+       $CellContext`part[$CellContext`$677, 984], 
+       $CellContext`sym[$CellContext`$1545, "*"], 
+       $CellContext`part[$CellContext`$665, 307], 
+       $CellContext`part[$CellContext`$680, 735], 
+       $CellContext`sym[$CellContext`$1546, "*"], 
+       $CellContext`part[$CellContext`$666, 467], 
+       $CellContext`part[$CellContext`$681, 333], 
+       $CellContext`sym[$CellContext`$1547, "*"], 
+       $CellContext`part[$CellContext`$668, 138], 
+       $CellContext`part[$CellContext`$675, 395], 
+       $CellContext`sym[$CellContext`$1548, "*"], 
+       $CellContext`part[$CellContext`$685, 486], 
+       $CellContext`sym[$CellContext`$1549, "$"], 
+       $CellContext`part[$CellContext`$672, 348], 
+       $CellContext`sym[$CellContext`$1550, "="], 
+       $CellContext`part[$CellContext`$673, 32], 
+       $CellContext`sym[$CellContext`$1551, "*"], 
+       $CellContext`part[$CellContext`$674, 529], 
+       $CellContext`part[$CellContext`$688, 189], 
+       $CellContext`sym[$CellContext`$1552, "&"], 
+       $CellContext`part[$CellContext`$690, 223], 
+       $CellContext`sym[$CellContext`$1553, "*"], 
+       $CellContext`part[$CellContext`$691, 552], 
+       $CellContext`sym[$CellContext`$1554, "*"], 
+       $CellContext`part[$CellContext`$678, 492], 
+       $CellContext`part[$CellContext`$692, 888], 
+       $CellContext`sym[$CellContext`$1555, "*"], 
+       $CellContext`part[$CellContext`$679, 835], 
+       $CellContext`part[$CellContext`$693, 53], 
+       $CellContext`sym[$CellContext`$1556, "$"], 
+       $CellContext`part[$CellContext`$682, 136], 
+       $CellContext`sym[$CellContext`$1557, "%"], 
+       $CellContext`part[$CellContext`$683, 779], 
+       $CellContext`sym[$CellContext`$1558, "*"], 
+       $CellContext`part[$CellContext`$684, 848], 
+       $CellContext`part[$CellContext`$698, 599], 
+       $CellContext`sym[$CellContext`$1559, "+"], 
+       $CellContext`part[$CellContext`$699, 731], 
+       $CellContext`sym[$CellContext`$1560, "*"], 
+       $CellContext`part[$CellContext`$686, 736], 
+       $CellContext`part[$CellContext`$700, 986], 
+       $CellContext`sym[$CellContext`$1561, "="], 
+       $CellContext`part[$CellContext`$687, 329], 
+       $CellContext`sym[$CellContext`$1562, "+"], 
+       $CellContext`part[$CellContext`$706, 13], 
+       $CellContext`sym[$CellContext`$1563, "$"], 
+       $CellContext`part[$CellContext`$707, 420], 
+       $CellContext`sym[$CellContext`$1564, "/"], 
+       $CellContext`part[$CellContext`$689, 745], 
+       $CellContext`sym[$CellContext`$1565, "-"], 
+       $CellContext`part[$CellContext`$694, 415], 
+       $CellContext`sym[$CellContext`$1566, "*"], 
+       $CellContext`part[$CellContext`$703, 367], 
+       $CellContext`part[$CellContext`$704, 969], 
+       $CellContext`sym[$CellContext`$1567, "/"], 
+       $CellContext`part[$CellContext`$709, 908], 
+       $CellContext`sym[$CellContext`$1568, "*"], 
+       $CellContext`part[$CellContext`$695, 930], 
+       $CellContext`part[$CellContext`$711, 961], 
+       $CellContext`sym[$CellContext`$1569, "*"], 
+       $CellContext`part[$CellContext`$696, 845], 
+       $CellContext`part[$CellContext`$712, 397], 
+       $CellContext`sym[$CellContext`$1570, "@"], 
+       $CellContext`part[$CellContext`$697, 99], 
+       $CellContext`sym[$CellContext`$1571, "*"], 
+       $CellContext`part[$CellContext`$701, 582], 
+       $CellContext`part[$CellContext`$719, 72], 
+       $CellContext`sym[$CellContext`$1572, "@"], 
+       $CellContext`part[$CellContext`$702, 669], 
+       $CellContext`sym[$CellContext`$1573, "+"], 
+       $CellContext`part[$CellContext`$705, 132], 
+       $CellContext`sym[$CellContext`$1574, "$"], 
+       $CellContext`part[$CellContext`$715, 736], 
+       $CellContext`sym[$CellContext`$1575, "*"], 
+       $CellContext`part[$CellContext`$720, 794], 
+       $CellContext`part[$CellContext`$730, 178], 
+       $CellContext`sym[$CellContext`$1576, "+"], 
+       $CellContext`part[$CellContext`$708, 997], 
+       $CellContext`sym[$CellContext`$1577, "$"], 
+       $CellContext`part[$CellContext`$710, 148], 
+       $CellContext`sym[$CellContext`$1578, "#"], 
+       $CellContext`part[$CellContext`$713, 9], 
+       $CellContext`sym[$CellContext`$1579, "*"], 
+       $CellContext`part[$CellContext`$714, 144], 
+       $CellContext`part[$CellContext`$733, 736], 
+       $CellContext`sym[$CellContext`$1580, "@"], 
+       $CellContext`part[$CellContext`$734, 191], 
+       $CellContext`sym[$CellContext`$1581, "*"], 
+       $CellContext`part[$CellContext`$716, 942], 
+       $CellContext`part[$CellContext`$735, 609], 
+       $CellContext`sym[$CellContext`$1582, "*"], 
+       $CellContext`part[$CellContext`$717, 346], 
+       $CellContext`part[$CellContext`$736, 774], 
+       $CellContext`sym[$CellContext`$1583, "*"], 
+       $CellContext`part[$CellContext`$718, 970], 
+       $CellContext`part[$CellContext`$729, 856], 
+       $CellContext`sym[$CellContext`$1584, "*"], 
+       $CellContext`part[$CellContext`$721, 608], 
+       $CellContext`part[$CellContext`$737, 62], 
+       $CellContext`sym[$CellContext`$1585, "$"], 
+       $CellContext`part[$CellContext`$722, 13], 
+       $CellContext`sym[$CellContext`$1586, "/"], 
+       $CellContext`part[$CellContext`$723, 993], 
+       $CellContext`sym[$CellContext`$1587, "="], 
+       $CellContext`part[$CellContext`$724, 539], 
+       $CellContext`sym[$CellContext`$1588, "*"], 
+       $CellContext`part[$CellContext`$725, 560], 
+       $CellContext`part[$CellContext`$741, 513], 
+       $CellContext`sym[$CellContext`$1589, "*"], 
+       $CellContext`part[$CellContext`$726, 637], 
+       $CellContext`part[$CellContext`$742, 853], 
+       $CellContext`sym[$CellContext`$1590, "*"], 
+       $CellContext`part[$CellContext`$727, 208], 
+       $CellContext`part[$CellContext`$744, 43], 
+       $CellContext`sym[$CellContext`$1591, "+"], 
+       $CellContext`part[$CellContext`$728, 896], 
+       $CellContext`sym[$CellContext`$1592, "*"], 
+       $CellContext`part[$CellContext`$747, 49], 
+       $CellContext`sym[$CellContext`$1593, "*"], 
+       $CellContext`part[$CellContext`$738, 325], 
+       $CellContext`part[$CellContext`$750, 651], 
+       $CellContext`sym[$CellContext`$1594, "*"], 
+       $CellContext`part[$CellContext`$731, 727], 
+       $CellContext`part[$CellContext`$740, 994], 
+       $CellContext`sym[$CellContext`$1595, "/"], 
+       $CellContext`part[$CellContext`$751, 314], 
+       $CellContext`sym[$CellContext`$1596, "-"], 
+       $CellContext`part[$CellContext`$732, 787], 
+       $CellContext`sym[$CellContext`$1597, "*"], 
+       $CellContext`part[$CellContext`$752, 718], 
+       $CellContext`part[$CellContext`$753, 70], 
+       $CellContext`sym[$CellContext`$1598, "-"], 
+       $CellContext`part[$CellContext`$745, 511], 
+       $CellContext`sym[$CellContext`$1599, "*"], 
+       $CellContext`part[$CellContext`$739, 372], 
+       $CellContext`part[$CellContext`$755, 453], 
+       $CellContext`sym[$CellContext`$1600, "+"], 
+       $CellContext`part[$CellContext`$756, 123], 
+       $CellContext`sym[$CellContext`$1601, "*"], 
+       $CellContext`part[$CellContext`$743, 907], 
+       $CellContext`part[$CellContext`$757, 921], 
+       $CellContext`sym[$CellContext`$1602, "%"], 
+       $CellContext`part[$CellContext`$759, 32], 
+       $CellContext`sym[$CellContext`$1603, "*"], 
+       $CellContext`part[$CellContext`$762, 467], 
+       $CellContext`part[$CellContext`$763, 689], 
+       $CellContext`sym[$CellContext`$1604, "*"], 
+       $CellContext`part[$CellContext`$746, 850], 
+       $CellContext`part[$CellContext`$764, 760], 
+       $CellContext`sym[$CellContext`$1605, "="], 
+       $CellContext`part[$CellContext`$748, 696], 
+       $CellContext`sym[$CellContext`$1606, "*"], 
+       $CellContext`part[$CellContext`$754, 659], 
+       $CellContext`sym[$CellContext`$1607, "*"], 
+       $CellContext`part[$CellContext`$749, 856], 
+       $CellContext`part[$CellContext`$765, 997], 
+       $CellContext`sym[$CellContext`$1608, "="], 
+       $CellContext`part[$CellContext`$758, 11], 
+       $CellContext`sym[$CellContext`$1609, "@"], 
+       $CellContext`part[$CellContext`$773, 885], 
+       $CellContext`sym[$CellContext`$1610, "$"], 
+       $CellContext`part[$CellContext`$775, 857], 
+       $CellContext`sym[$CellContext`$1611, "*"], 
+       $CellContext`part[$CellContext`$760, 312], 
+       $CellContext`part[$CellContext`$777, 252], 
+       $CellContext`sym[$CellContext`$1612, "*"], 
+       $CellContext`part[$CellContext`$761, 795], 
+       $CellContext`part[$CellContext`$779, 842], 
+       $CellContext`sym[$CellContext`$1613, "*"], 
+       $CellContext`part[$CellContext`$766, 545], 
+       $CellContext`part[$CellContext`$781, 420], 
+       $CellContext`sym[$CellContext`$1614, "-"], 
+       $CellContext`part[$CellContext`$783, 92], 
+       $CellContext`sym[$CellContext`$1615, "*"], 
+       $CellContext`part[$CellContext`$774, 733], 
+       $CellContext`part[$CellContext`$784, 447], 
+       $CellContext`sym[$CellContext`$1616, "$"], 
+       $CellContext`part[$CellContext`$787, 158], 
+       $CellContext`sym[$CellContext`$1617, "%"], 
+       $CellContext`part[$CellContext`$767, 565], 
+       $CellContext`sym[$CellContext`$1618, "*"], 
+       $CellContext`part[$CellContext`$768, 115], 
+       $CellContext`part[$CellContext`$789, 178], 
+       $CellContext`sym[$CellContext`$1619, "*"], 
+       $CellContext`part[$CellContext`$769, 522], 
+       $CellContext`part[$CellContext`$790, 495], 
+       $CellContext`sym[$CellContext`$1620, "*"], 
+       $CellContext`part[$CellContext`$770, 179], 
+       $CellContext`part[$CellContext`$791, 748], 
+       $CellContext`sym[$CellContext`$1621, "*"], 
+       $CellContext`part[$CellContext`$771, 606], 
+       $CellContext`part[$CellContext`$772, 269], 
+       $CellContext`sym[$CellContext`$1622, "*"], 
+       $CellContext`part[$CellContext`$776, 857], 
+       $CellContext`part[$CellContext`$794, 430], 
+       $CellContext`sym[$CellContext`$1623, "*"], 
+       $CellContext`part[$CellContext`$778, 510], 
+       $CellContext`part[$CellContext`$795, 480], 
+       $CellContext`sym[$CellContext`$1624, "*"], 
+       $CellContext`part[$CellContext`$780, 678], 
+       $CellContext`part[$CellContext`$796, 667], 
+       $CellContext`sym[$CellContext`$1625, "%"], 
+       $CellContext`part[$CellContext`$797, 266], 
+       $CellContext`sym[$CellContext`$1626, "*"], 
+       $CellContext`part[$CellContext`$782, 426], 
+       $CellContext`part[$CellContext`$799, 625], 
+       $CellContext`sym[$CellContext`$1627, "&"], 
+       $CellContext`part[$CellContext`$805, 60], 
+       $CellContext`sym[$CellContext`$1628, "*"], 
+       $CellContext`part[$CellContext`$785, 995], 
+       $CellContext`part[$CellContext`$806, 556], 
+       $CellContext`sym[$CellContext`$1629, "*"], 
+       $CellContext`part[$CellContext`$786, 761], 
+       $CellContext`part[$CellContext`$807, 56], 
+       $CellContext`sym[$CellContext`$1630, "+"], 
+       $CellContext`part[$CellContext`$808, 67], 
+       $CellContext`sym[$CellContext`$1631, "*"], 
+       $CellContext`part[$CellContext`$788, 128], 
+       $CellContext`part[$CellContext`$809, 698], 
+       $CellContext`sym[$CellContext`$1632, "-"], 
+       $CellContext`part[$CellContext`$798, 846], 
+       $CellContext`sym[$CellContext`$1633, "*"], 
+       $CellContext`part[$CellContext`$792, 927], 
+       $CellContext`part[$CellContext`$801, 561], 
+       $CellContext`sym[$CellContext`$1634, "*"], 
+       $CellContext`part[$CellContext`$793, 519], 
+       $CellContext`part[$CellContext`$812, 166], 
+       $CellContext`sym[$CellContext`$1635, "*"], 
+       $CellContext`part[$CellContext`$803, 268], 
+       $CellContext`sym[$CellContext`$1636, "="], 
+       $CellContext`part[$CellContext`$804, 55], 
+       $CellContext`sym[$CellContext`$1637, "/"], 
+       $CellContext`part[$CellContext`$813, 174], 
+       $CellContext`sym[$CellContext`$1638, "%"], 
+       $CellContext`part[$CellContext`$814, 944], 
+       $CellContext`sym[$CellContext`$1639, "+"], 
+       $CellContext`part[$CellContext`$810, 593], 
+       $CellContext`sym[$CellContext`$1640, "*"], 
+       $CellContext`part[$CellContext`$800, 807], 
+       $CellContext`part[$CellContext`$819, 951], 
+       $CellContext`sym[$CellContext`$1641, "%"], 
+       $CellContext`part[$CellContext`$802, 687], 
+       $CellContext`sym[$CellContext`$1642, "*"], 
+       $CellContext`part[$CellContext`$811, 485], 
+       $CellContext`part[$CellContext`$825, 716], 
+       $CellContext`sym[$CellContext`$1643, "*"], 
+       $CellContext`part[$CellContext`$823, 584], 
+       $CellContext`part[$CellContext`$824, 460], 
+       $CellContext`sym[$CellContext`$1644, "$"], 
+       $CellContext`part[$CellContext`$828, 668], 
+       $CellContext`sym[$CellContext`$1645, "="], 
+       $CellContext`part[$CellContext`$815, 591], 
+       $CellContext`sym[$CellContext`$1646, "*"], 
+       $CellContext`part[$CellContext`$816, 698], 
+       $CellContext`part[$CellContext`$829, 798], 
+       $CellContext`sym[$CellContext`$1647, "*"], 
+       $CellContext`part[$CellContext`$817, 376], 
+       $CellContext`part[$CellContext`$831, 720], 
+       $CellContext`sym[$CellContext`$1648, "="], 
+       $CellContext`part[$CellContext`$818, 891], 
+       $CellContext`sym[$CellContext`$1649, "*"], 
+       $CellContext`part[$CellContext`$820, 538], 
+       $CellContext`part[$CellContext`$834, 312], 
+       $CellContext`sym[$CellContext`$1650, "*"], 
+       $CellContext`part[$CellContext`$827, 23], 
+       $CellContext`part[$CellContext`$836, 35], 
+       $CellContext`sym[$CellContext`$1651, "*"], 
+       $CellContext`part[$CellContext`$821, 563], 
+       $CellContext`part[$CellContext`$837, 550], 
+       $CellContext`sym[$CellContext`$1652, "*"], 
+       $CellContext`part[$CellContext`$822, 472], 
+       $CellContext`part[$CellContext`$838, 885], 
+       $CellContext`sym[$CellContext`$1653, "%"], 
+       $CellContext`part[$CellContext`$841, 435], 
+       $CellContext`sym[$CellContext`$1654, "*"], 
+       $CellContext`part[$CellContext`$842, 882], 
+       $CellContext`sym[$CellContext`$1655, "*"], 
+       $CellContext`part[$CellContext`$826, 297], 
+       $CellContext`part[$CellContext`$843, 556], 
+       $CellContext`sym[$CellContext`$1656, "&"], 
+       $CellContext`part[$CellContext`$835, 745], 
+       $CellContext`sym[$CellContext`$1657, "$"], 
+       $CellContext`part[$CellContext`$850, 650], 
+       $CellContext`sym[$CellContext`$1658, "*"], 
+       $CellContext`part[$CellContext`$830, 351], 
+       $CellContext`part[$CellContext`$852, 900], 
+       $CellContext`sym[$CellContext`$1659, "#"], 
+       $CellContext`part[$CellContext`$832, 513], 
+       $CellContext`sym[$CellContext`$1660, "/"], 
+       $CellContext`part[$CellContext`$833, 476], 
+       $CellContext`sym[$CellContext`$1661, "*"], 
+       $CellContext`part[$CellContext`$839, 343], 
+       $CellContext`part[$CellContext`$855, 905], 
+       $CellContext`sym[$CellContext`$1662, "-"], 
+       $CellContext`part[$CellContext`$840, 937], 
+       $CellContext`sym[$CellContext`$1663, "*"], 
+       $CellContext`part[$CellContext`$849, 675], 
+       $CellContext`part[$CellContext`$856, 122], 
+       $CellContext`sym[$CellContext`$1664, "*"], 
+       $CellContext`part[$CellContext`$857, 555], 
+       $CellContext`part[$CellContext`$858, 796], 
+       $CellContext`sym[$CellContext`$1665, "$"], 
+       $CellContext`part[$CellContext`$844, 417], 
+       $CellContext`sym[$CellContext`$1666, "*"], 
+       $CellContext`part[$CellContext`$845, 691], 
+       $CellContext`part[$CellContext`$859, 530], 
+       $CellContext`sym[$CellContext`$1667, "&"], 
+       $CellContext`part[$CellContext`$854, 975], 
+       $CellContext`sym[$CellContext`$1668, "@"], 
+       $CellContext`part[$CellContext`$860, 229], 
+       $CellContext`sym[$CellContext`$1669, "$"], 
+       $CellContext`part[$CellContext`$846, 671], 
+       $CellContext`sym[$CellContext`$1670, "*"], 
+       $CellContext`part[$CellContext`$847, 609], 
+       $CellContext`part[$CellContext`$861, 585], 
+       $CellContext`sym[$CellContext`$1671, "$"], 
+       $CellContext`part[$CellContext`$848, 424], 
+       $CellContext`sym[$CellContext`$1672, "&"], 
+       $CellContext`part[$CellContext`$851, 9], 
+       $CellContext`sym[$CellContext`$1673, "*"], 
+       $CellContext`part[$CellContext`$864, 495], 
+       $CellContext`sym[$CellContext`$1674, "@"], 
+       $CellContext`part[$CellContext`$853, 867], 
+       $CellContext`sym[$CellContext`$1675, "&"], 
+       $CellContext`part[$CellContext`$866, 800], 
+       $CellContext`sym[$CellContext`$1676, "-"], 
+       $CellContext`part[$CellContext`$874, 310], 
+       $CellContext`sym[$CellContext`$1677, "="], 
+       $CellContext`part[$CellContext`$877, 320], 
+       $CellContext`sym[$CellContext`$1678, "*"], 
+       $CellContext`part[$CellContext`$869, 181], 
+       $CellContext`sym[$CellContext`$1679, "$"], 
+       $CellContext`part[$CellContext`$862, 22], 
+       $CellContext`sym[$CellContext`$1680, "*"], 
+       $CellContext`part[$CellContext`$863, 456], 
+       $CellContext`part[$CellContext`$871, 774], 
+       $CellContext`sym[$CellContext`$1681, "&"], 
+       $CellContext`part[$CellContext`$865, 107], 
+       $CellContext`sym[$CellContext`$1682, "-"], 
+       $CellContext`part[$CellContext`$879, 258], 
+       $CellContext`sym[$CellContext`$1683, "&"], 
+       $CellContext`part[$CellContext`$867, 683], 
+       $CellContext`sym[$CellContext`$1684, "*"], 
+       $CellContext`part[$CellContext`$875, 494], 
+       $CellContext`sym[$CellContext`$1685, "%"], 
+       $CellContext`part[$CellContext`$868, 876], 
+       $CellContext`sym[$CellContext`$1686, "*"], 
+       $CellContext`part[$CellContext`$880, 677], 
+       $CellContext`part[$CellContext`$881, 227], 
+       $CellContext`sym[$CellContext`$1687, "*"], 
+       $CellContext`part[$CellContext`$870, 954], 
+       $CellContext`part[$CellContext`$882, 922], 
+       $CellContext`sym[$CellContext`$1688, "*"], 
+       $CellContext`part[$CellContext`$878, 13], 
+       $CellContext`part[$CellContext`$883, 778], 
+       $CellContext`sym[$CellContext`$1689, "*"], 
+       $CellContext`part[$CellContext`$872, 643], 
+       $CellContext`part[$CellContext`$884, 384], 
+       $CellContext`sym[$CellContext`$1690, "$"], 
+       $CellContext`part[$CellContext`$873, 437], 
+       $CellContext`sym[$CellContext`$1691, "/"], 
+       $CellContext`part[$CellContext`$887, 861], 
+       $CellContext`sym[$CellContext`$1692, "*"], 
+       $CellContext`part[$CellContext`$876, 265], 
+       $CellContext`part[$CellContext`$888, 771], 
+       $CellContext`sym[$CellContext`$1693, "#"], 
+       $CellContext`part[$CellContext`$891, 370], 
+       $CellContext`sym[$CellContext`$1694, "%"], 
+       $CellContext`part[$CellContext`$885, 156], 
+       $CellContext`sym[$CellContext`$1695, "="], 
+       $CellContext`part[$CellContext`$894, 500], 
+       $CellContext`sym[$CellContext`$1696, "*"], 
+       $CellContext`part[$CellContext`$886, 192], 
+       $CellContext`part[$CellContext`$901, 470], 
+       $CellContext`sym[$CellContext`$1697, "@"], 
+       $CellContext`part[$CellContext`$889, 553], 
+       $CellContext`sym[$CellContext`$1698, "*"], 
+       $CellContext`part[$CellContext`$890, 860], 
+       $CellContext`part[$CellContext`$905, 771], 
+       $CellContext`sym[$CellContext`$1699, "@"], 
+       $CellContext`part[$CellContext`$892, 309], 
+       $CellContext`sym[$CellContext`$1700, "%"], 
+       $CellContext`part[$CellContext`$893, 483], 
+       $CellContext`sym[$CellContext`$1701, "*"], 
+       $CellContext`part[$CellContext`$897, 93], 
+       $CellContext`part[$CellContext`$907, 6], 
+       $CellContext`sym[$CellContext`$1702, "*"], 
+       $CellContext`part[$CellContext`$903, 198], 
+       $CellContext`part[$CellContext`$910, 334], 
+       $CellContext`sym[$CellContext`$1703, "*"], 
+       $CellContext`part[$CellContext`$895, 900], 
+       $CellContext`part[$CellContext`$911, 493], 
+       $CellContext`sym[$CellContext`$1704, "*"], 
+       $CellContext`part[$CellContext`$896, 249], 
+       $CellContext`part[$CellContext`$912, 991], 
+       $CellContext`sym[$CellContext`$1705, "/"], 
+       $CellContext`part[$CellContext`$906, 835], 
+       $CellContext`sym[$CellContext`$1706, "&"], 
+       $CellContext`part[$CellContext`$898, 171], 
+       $CellContext`sym[$CellContext`$1707, "*"], 
+       $CellContext`part[$CellContext`$899, 248], 
+       $CellContext`part[$CellContext`$915, 661], 
+       $CellContext`sym[$CellContext`$1708, "*"], 
+       $CellContext`part[$CellContext`$900, 315], 
+       $CellContext`part[$CellContext`$916, 514], 
+       $CellContext`sym[$CellContext`$1709, "*"], 
+       $CellContext`part[$CellContext`$902, 169], 
+       $CellContext`part[$CellContext`$917, 832], 
+       $CellContext`sym[$CellContext`$1710, "="], 
+       $CellContext`part[$CellContext`$918, 296], 
+       $CellContext`sym[$CellContext`$1711, "*"], 
+       $CellContext`part[$CellContext`$909, 496], 
+       $CellContext`sym[$CellContext`$1712, "*"], 
+       $CellContext`part[$CellContext`$904, 482], 
+       $CellContext`part[$CellContext`$920, 363], 
+       $CellContext`sym[$CellContext`$1713, "*"], 
+       $CellContext`part[$CellContext`$908, 459], 
+       $CellContext`part[$CellContext`$922, 58], 
+       $CellContext`sym[$CellContext`$1714, "/"], 
+       $CellContext`part[$CellContext`$914, 521], 
+       $CellContext`sym[$CellContext`$1715, "$"], 
+       $CellContext`part[$CellContext`$923, 865], 
+       $CellContext`sym[$CellContext`$1716, "*"], 
+       $CellContext`part[$CellContext`$913, 191], 
+       $CellContext`part[$CellContext`$926, 993], 
+       $CellContext`sym[$CellContext`$1717, "$"], 
+       $CellContext`part[$CellContext`$931, 82], 
+       $CellContext`sym[$CellContext`$1718, "-"], 
+       $CellContext`part[$CellContext`$919, 650], 
+       $CellContext`sym[$CellContext`$1719, "*"], 
+       $CellContext`part[$CellContext`$921, 942], 
+       $CellContext`part[$CellContext`$924, 16], 
+       $CellContext`sym[$CellContext`$1720, "%"], 
+       $CellContext`part[$CellContext`$934, 16], 
+       $CellContext`sym[$CellContext`$1721, "+"], 
+       $CellContext`part[$CellContext`$938, 877], 
+       $CellContext`sym[$CellContext`$1722, "&"], 
+       $CellContext`part[$CellContext`$939, 768], 
+       $CellContext`sym[$CellContext`$1723, "-"], 
+       $CellContext`part[$CellContext`$932, 490], 
+       $CellContext`sym[$CellContext`$1724, "*"], 
+       $CellContext`part[$CellContext`$925, 586], 
+       $CellContext`part[$CellContext`$940, 110], 
+       $CellContext`sym[$CellContext`$1725, "*"], 
+       $CellContext`part[$CellContext`$927, 255], 
+       $CellContext`part[$CellContext`$943, 90], 
+       $CellContext`sym[$CellContext`$1726, "&"], 
+       $CellContext`part[$CellContext`$928, 55], 
+       $CellContext`sym[$CellContext`$1727, "/"], 
+       $CellContext`part[$CellContext`$936, 35], 
+       $CellContext`sym[$CellContext`$1728, "*"], 
+       $CellContext`part[$CellContext`$929, 337], 
+       $CellContext`part[$CellContext`$945, 433], 
+       $CellContext`sym[$CellContext`$1729, "#"], 
+       $CellContext`part[$CellContext`$930, 334], 
+       $CellContext`sym[$CellContext`$1730, "+"], 
+       $CellContext`part[$CellContext`$949, 288], 
+       $CellContext`sym[$CellContext`$1731, "@"], 
+       $CellContext`part[$CellContext`$933, 381], 
+       $CellContext`sym[$CellContext`$1732, "#"], 
+       $CellContext`part[$CellContext`$941, 413], 
+       $CellContext`sym[$CellContext`$1733, "*"], 
+       $CellContext`part[$CellContext`$935, 867], 
+       $CellContext`part[$CellContext`$942, 104], 
+       $CellContext`sym[$CellContext`$1734, "="], 
+       $CellContext`part[$CellContext`$937, 427], 
+       $CellContext`sym[$CellContext`$1735, "*"], 
+       $CellContext`part[$CellContext`$953, 970], 
+       $CellContext`sym[$CellContext`$1736, "*"], 
+       $CellContext`part[$CellContext`$950, 721], 
+       $CellContext`part[$CellContext`$957, 637], 
+       $CellContext`sym[$CellContext`$1737, "#"], 
+       $CellContext`part[$CellContext`$958, 37], 
+       $CellContext`sym[$CellContext`$1738, "*"], 
+       $CellContext`part[$CellContext`$944, 623], 
+       $CellContext`part[$CellContext`$961, 564], 
+       $CellContext`sym[$CellContext`$1739, "*"], 
+       $CellContext`part[$CellContext`$946, 33], 
+       $CellContext`part[$CellContext`$947, 685], 
+       $CellContext`sym[$CellContext`$1740, "#"], 
+       $CellContext`part[$CellContext`$948, 228], 
+       $CellContext`sym[$CellContext`$1741, "*"], 
+       $CellContext`part[$CellContext`$951, 717], 
+       $CellContext`sym[$CellContext`$1742, "*"], 
+       $CellContext`part[$CellContext`$952, 344], 
+       $CellContext`part[$CellContext`$965, 937], 
+       $CellContext`sym[$CellContext`$1743, "*"], 
+       $CellContext`part[$CellContext`$954, 953], 
+       $CellContext`part[$CellContext`$969, 342], 
+       $CellContext`sym[$CellContext`$1744, "*"], 
+       $CellContext`part[$CellContext`$955, 546], 
+       $CellContext`part[$CellContext`$970, 411], 
+       $CellContext`sym[$CellContext`$1745, "*"], 
+       $CellContext`part[$CellContext`$956, 162], 
+       $CellContext`part[$CellContext`$971, 537], 
+       $CellContext`sym[$CellContext`$1746, "*"], 
+       $CellContext`part[$CellContext`$964, 2], 
+       $CellContext`part[$CellContext`$974, 641], 
+       $CellContext`sym[$CellContext`$1747, "*"], 
+       $CellContext`part[$CellContext`$959, 740], 
+       $CellContext`part[$CellContext`$975, 424], 
+       $CellContext`sym[$CellContext`$1748, "-"], 
+       $CellContext`part[$CellContext`$960, 331], 
+       $CellContext`sym[$CellContext`$1749, "*"], 
+       $CellContext`part[$CellContext`$976, 24], 
+       $CellContext`sym[$CellContext`$1750, "="], 
+       $CellContext`part[$CellContext`$977, 261], 
+       $CellContext`sym[$CellContext`$1751, "="], 
+       $CellContext`part[$CellContext`$962, 556], 
+       $CellContext`sym[$CellContext`$1752, "*"], 
+       $CellContext`part[$CellContext`$968, 837], 
+       $CellContext`part[$CellContext`$978, 667], 
+       $CellContext`sym[$CellContext`$1753, "*"], 
+       $CellContext`part[$CellContext`$963, 843], 
+       $CellContext`part[$CellContext`$980, 324], 
+       $CellContext`sym[$CellContext`$1754, "="], 
+       $CellContext`part[$CellContext`$982, 841], 
+       $CellContext`sym[$CellContext`$1755, "*"], 
+       $CellContext`part[$CellContext`$966, 255], 
+       $CellContext`part[$CellContext`$967, 349], 
+       $CellContext`sym[$CellContext`$1756, "&"], 
+       $CellContext`part[$CellContext`$979, 551], 
+       $CellContext`sym[$CellContext`$1757, "%"], 
+       $CellContext`part[$CellContext`$972, 337], 
+       $CellContext`sym[$CellContext`$1758, "*"], 
+       $CellContext`part[$CellContext`$973, 791], 
+       $CellContext`part[$CellContext`$989, 354], 
+       $CellContext`sym[$CellContext`$1759, "/"], 
+       $CellContext`part[$CellContext`$983, 465], 
+       $CellContext`sym[$CellContext`$1760, "&"], 
+       $CellContext`part[$CellContext`$990, 455], 
+       $CellContext`sym[$CellContext`$1761, "*"], 
+       $CellContext`part[$CellContext`$985, 996], 
+       $CellContext`sym[$CellContext`$1762, "#"], 
+       $CellContext`part[$CellContext`$992, 542], 
+       $CellContext`sym[$CellContext`$1763, "&"], 
+       $CellContext`part[$CellContext`$993, 245], 
+       $CellContext`sym[$CellContext`$1764, "@"], 
+       $CellContext`part[$CellContext`$981, 330], 
+       $CellContext`sym[$CellContext`$1765, "$"], 
+       $CellContext`part[$CellContext`$984, 486], 
+       $CellContext`sym[$CellContext`$1766, "#"], 
+       $CellContext`part[$CellContext`$1000, 913], 
+       $CellContext`sym[$CellContext`$1767, "/"], 
+       $CellContext`part[$CellContext`$1001, 690], 
+       $CellContext`sym[$CellContext`$1768, "*"], 
+       $CellContext`part[$CellContext`$986, 227], 
+       $CellContext`part[$CellContext`$1002, 943], 
+       $CellContext`sym[$CellContext`$1769, "*"], 
+       $CellContext`part[$CellContext`$987, 33], 
+       $CellContext`part[$CellContext`$988, 681], 
+       $CellContext`sym[$CellContext`$1770, "*"], 
+       $CellContext`part[$CellContext`$995, 331], 
+       $CellContext`part[$CellContext`$996, 738], 
+       $CellContext`sym[$CellContext`$1771, "*"], 
+       $CellContext`part[$CellContext`$991, 304], 
+       $CellContext`part[$CellContext`$1004, 195], 
+       $CellContext`sym[$CellContext`$1772, "*"], 
+       $CellContext`part[$CellContext`$994, 166], 
+       $CellContext`part[$CellContext`$1007, 975], 
+       $CellContext`sym[$CellContext`$1773, "@"], 
+       $CellContext`part[$CellContext`$997, 249], 
+       $CellContext`sym[$CellContext`$1774, "*"], 
+       $CellContext`part[$CellContext`$998, 126], 
+       $CellContext`part[$CellContext`$1011, 279], 
+       $CellContext`sym[$CellContext`$1775, "*"], 
+       $CellContext`part[$CellContext`$999, 833], 
+       $CellContext`part[$CellContext`$1012, 828], 
+       $CellContext`sym[$CellContext`$1776, "*"], 
+       $CellContext`part[$CellContext`$1003, 284], 
+       $CellContext`part[$CellContext`$1013, 967], 
+       $CellContext`sym[$CellContext`$1777, "&"], 
+       $CellContext`part[$CellContext`$1018, 898], 
+       $CellContext`sym[$CellContext`$1778, "&"], 
+       $CellContext`part[$CellContext`$1019, 746], 
+       $CellContext`sym[$CellContext`$1779, "+"], 
+       $CellContext`part[$CellContext`$1005, 231], 
+       $CellContext`sym[$CellContext`$1780, "*"], 
+       $CellContext`part[$CellContext`$1006, 857], 
+       $CellContext`part[$CellContext`$1022, 768], 
+       $CellContext`sym[$CellContext`$1781, "&"], 
+       $CellContext`part[$CellContext`$1025, 979], 
+       $CellContext`sym[$CellContext`$1782, "*"], 
+       $CellContext`part[$CellContext`$1008, 252], 
+       $CellContext`part[$CellContext`$1026, 374], 
+       $CellContext`sym[$CellContext`$1783, "*"], 
+       $CellContext`part[$CellContext`$1009, 71], 
+       $CellContext`part[$CellContext`$1010, 599], 
+       $CellContext`sym[$CellContext`$1784, "$"], 
+       $CellContext`part[$CellContext`$1030, 436], 
+       $CellContext`sym[$CellContext`$1785, "+"], 
+       $CellContext`part[$CellContext`$1023, 279], 
+       $CellContext`sym[$CellContext`$1786, "="], 
+       $CellContext`part[$CellContext`$1014, 285], 
+       $CellContext`sym[$CellContext`$1787, "*"], 
+       $CellContext`part[$CellContext`$1015, 798], 
+       $CellContext`part[$CellContext`$1031, 306], 
+       $CellContext`sym[$CellContext`$1788, "*"], 
+       $CellContext`part[$CellContext`$1016, 370], 
+       $CellContext`sym[$CellContext`$1789, "*"], 
+       $CellContext`part[$CellContext`$1017, 640], 
+       $CellContext`part[$CellContext`$1028, 370], 
+       $CellContext`sym[$CellContext`$1790, "*"], 
+       $CellContext`part[$CellContext`$1020, 134], 
+       $CellContext`part[$CellContext`$1036, 982], 
+       $CellContext`sym[$CellContext`$1791, "*"], 
+       $CellContext`part[$CellContext`$1021, 329], 
+       $CellContext`part[$CellContext`$1038, 566], 
+       $CellContext`sym[$CellContext`$1792, "*"], 
+       $CellContext`part[$CellContext`$1024, 840], 
+       $CellContext`part[$CellContext`$1040, 505], 
+       $CellContext`sym[$CellContext`$1793, "*"], 
+       $CellContext`part[$CellContext`$1027, 192], 
+       $CellContext`sym[$CellContext`$1794, "*"], 
+       $CellContext`part[$CellContext`$1033, 139], 
+       $CellContext`part[$CellContext`$1041, 84], 
+       $CellContext`sym[$CellContext`$1795, "-"], 
+       $CellContext`part[$CellContext`$1029, 970], 
+       $CellContext`sym[$CellContext`$1796, "*"], 
+       $CellContext`part[$CellContext`$1032, 727], 
+       $CellContext`part[$CellContext`$1049, 284], 
+       $CellContext`sym[$CellContext`$1797, "*"], 
+       $CellContext`part[$CellContext`$1034, 689], 
+       $CellContext`part[$CellContext`$1050, 124], 
+       $CellContext`sym[$CellContext`$1798, "*"], 
+       $CellContext`part[$CellContext`$1035, 498], 
+       $CellContext`part[$CellContext`$1051, 921], 
+       $CellContext`sym[$CellContext`$1799, "*"], 
+       $CellContext`part[$CellContext`$1037, 131], 
+       $CellContext`part[$CellContext`$1052, 303], 
+       $CellContext`sym[$CellContext`$1800, "$"], 
+       $CellContext`part[$CellContext`$1039, 390], 
+       $CellContext`sym[$CellContext`$1801, "#"], 
+       $CellContext`part[$CellContext`$1054, 286], 
+       $CellContext`sym[$CellContext`$1802, "*"], 
+       $CellContext`part[$CellContext`$1055, 775], 
+       $CellContext`sym[$CellContext`$1803, "/"], 
+       $CellContext`part[$CellContext`$1042, 973], 
+       $CellContext`sym[$CellContext`$1804, "*"], 
+       $CellContext`part[$CellContext`$1043, 830], 
+       $CellContext`part[$CellContext`$1058, 986], 
+       $CellContext`sym[$CellContext`$1805, "-"], 
+       $CellContext`part[$CellContext`$1044, 394], 
+       $CellContext`sym[$CellContext`$1806, "&"], 
+       $CellContext`part[$CellContext`$1060, 469], 
+       $CellContext`sym[$CellContext`$1807, "/"], 
+       $CellContext`part[$CellContext`$1045, 562], 
+       $CellContext`sym[$CellContext`$1808, "*"], 
+       $CellContext`part[$CellContext`$1046, 907], 
+       $CellContext`part[$CellContext`$1053, 652], 
+       $CellContext`sym[$CellContext`$1809, "-"], 
+       $CellContext`part[$CellContext`$1063, 344], 
+       $CellContext`sym[$CellContext`$1810, "*"], 
+       $CellContext`part[$CellContext`$1065, 942], 
+       $CellContext`part[$CellContext`$1066, 31], 
+       $CellContext`sym[$CellContext`$1811, "*"], 
+       $CellContext`part[$CellContext`$1047, 321], 
+       $CellContext`part[$CellContext`$1067, 846], 
+       $CellContext`sym[$CellContext`$1812, "*"], 
+       $CellContext`part[$CellContext`$1048, 455], 
+       $CellContext`part[$CellContext`$1068, 72], 
+       $CellContext`sym[$CellContext`$1813, "/"], 
+       $CellContext`part[$CellContext`$1069, 582], 
+       $CellContext`sym[$CellContext`$1814, "/"], 
+       $CellContext`part[$CellContext`$1056, 274], 
+       $CellContext`sym[$CellContext`$1815, "*"], 
+       $CellContext`part[$CellContext`$1057, 774], 
+       $CellContext`part[$CellContext`$1072, 201], 
+       $CellContext`sym[$CellContext`$1816, "#"], 
+       $CellContext`part[$CellContext`$1074, 838], 
+       $CellContext`sym[$CellContext`$1817, "*"], 
+       $CellContext`part[$CellContext`$1059, 96], 
+       $CellContext`part[$CellContext`$1075, 253], 
+       $CellContext`sym[$CellContext`$1818, "&"], 
+       $CellContext`part[$CellContext`$1070, 380], 
+       $CellContext`sym[$CellContext`$1819, "/"], 
+       $CellContext`part[$CellContext`$1061, 335], 
+       $CellContext`sym[$CellContext`$1820, "*"], 
+       $CellContext`part[$CellContext`$1062, 526], 
+       $CellContext`part[$CellContext`$1077, 606], 
+       $CellContext`sym[$CellContext`$1821, "$"], 
+       $CellContext`part[$CellContext`$1078, 744], 
+       $CellContext`sym[$CellContext`$1822, "*"], 
+       $CellContext`part[$CellContext`$1079, 792], 
+       $CellContext`sym[$CellContext`$1823, "*"], 
+       $CellContext`part[$CellContext`$1064, 31], 
+       $CellContext`part[$CellContext`$1080, 396], 
+       $CellContext`sym[$CellContext`$1824, "*"], 
+       $CellContext`part[$CellContext`$1073, 648], 
+       $CellContext`part[$CellContext`$1086, 842], 
+       $CellContext`sym[$CellContext`$1825, "*"], 
+       $CellContext`part[$CellContext`$1076, 101], 
+       $CellContext`sym[$CellContext`$1826, "@"], 
+       $CellContext`part[$CellContext`$1087, 485], 
+       $CellContext`sym[$CellContext`$1827, "/"], 
+       $CellContext`part[$CellContext`$1071, 570], 
+       $CellContext`sym[$CellContext`$1828, "-"], 
+       $CellContext`part[$CellContext`$1081, 990], 
+       $CellContext`sym[$CellContext`$1829, "+"], 
+       $CellContext`part[$CellContext`$1082, 609], 
+       $CellContext`sym[$CellContext`$1830, "*"], 
+       $CellContext`part[$CellContext`$1092, 963], 
+       $CellContext`sym[$CellContext`$1831, "*"], 
+       $CellContext`part[$CellContext`$1085, 125], 
+       $CellContext`part[$CellContext`$1093, 761], 
+       $CellContext`sym[$CellContext`$1832, "*"], 
+       $CellContext`part[$CellContext`$1083, 938], 
+       $CellContext`part[$CellContext`$1094, 981], 
+       $CellContext`sym[$CellContext`$1833, "*"], 
+       $CellContext`part[$CellContext`$1084, 896], 
+       $CellContext`part[$CellContext`$1095, 675], 
+       $CellContext`sym[$CellContext`$1834, "*"], 
+       $CellContext`part[$CellContext`$1088, 510], 
+       $CellContext`part[$CellContext`$1096, 998], 
+       $CellContext`sym[$CellContext`$1835, "*"], 
+       $CellContext`part[$CellContext`$1089, 801], 
+       $CellContext`part[$CellContext`$1097, 697], 
+       $CellContext`sym[$CellContext`$1836, "*"], 
+       $CellContext`part[$CellContext`$1090, 329], 
+       $CellContext`part[$CellContext`$1098, 960], 
+       $CellContext`sym[$CellContext`$1837, "*"], 
+       $CellContext`part[$CellContext`$1091, 983], 
+       $CellContext`part[$CellContext`$1099, 874]}, {CompressedData["
+1:eJxF2lXQkEUbgGG6O1VAulMwCBWkJEUaCSklDDpUFBGkS7oFpFMBSUVRUkHA
+wAYUUbpEUsX/+maemf/gmnvmPduTnX2f3fydejbpkSRRokT3JUuUKKGJE/2/
+SfE5UXJSkJJUpI6mIS3pounJQMZoJjKThaxkIzs5yMld3M095CI3ebiXvOSL
+5qcABSlE4WgRilIsWpwSlKQUpSlD2Wi5hHVSPlqB+3kg+iAPUTFaicpU4WEe
+4VGqUo3HqE4NalIrWpvHqROtSz3qRxvQkCeijXiSxtEmNKUZzWkRbUkrnqI1
+baJtacfTtKcDHelEZ57hWbrQlW505zme5wVepAc96RXtTR/6RvvRnwEM5CVe
+5hUG8Wr0NQbzOkN4g6EMi77JcEYwklHR0YxhbHQc45nARN5iEpOZwlSmMT06
+g5nMis5mDnOZx9vR+SxgIe+wiMUsYSnLWM6K6EpWsZo1rI2+y3usi65nA++z
+kU1sZkt0K9v4gA/Zzkd8zA4+4VN2Rnexmz3RvezjMz5nPwf4InqQQxzmS77i
+a77hCN9Gv+N7foj+yE/8zFGOcZxfor9ygt84ye/8wSlOcyZ6lnOcj17gIpei
+l7nCn9Gr/MW16HVucJNb3I7+zT/8yx3+iyZsUolJQlKSkZwUpCRVNDVpSEs6
+0kczkJFMZCYLWclGdnKQk7uid3MPuchNnui95CVfND8FKBgtRGGKRItSjOKU
+oGS0FKUpQ1nKcR/lqcD9PMCDPERFKlGZKjzMIzxKVapFH6M6NahJLWrzOHWo
+Sz3q04CG0SdoxJM0pkm0Kc1oHm1BS1pFn6I1bWhLO56mfbQDHelEZ57hWbpE
+u9KN7tHneJ4XeJEe0Z70one0D33pF+3PAAbyEi/zCoOir/Iag3mdIdE3GMqw
+6JsMZ0R0JKMYHR3DWMYxnglM5C0mMTk6halMi05nBjOjs5jNnOhc5vE281kQ
+Xcg7LGIxS1jKMpazgpWsYjVrWMu7vMe66Ho28D4b2cRmtkS3so0P+JDt0Y/4
+mB3RT/iUnexiN3vYyz4+43P2Rw/wBQejhzjMl3zF13zDEb7lu+j3/MCP0Z/4
+maPRYxznl+ivnOA3TvI7f3CK05yJnuUc56MXuMglLnOFP7nKX1yLXucGN7nF
+7ejf/MO/3OG/aMLBKjFJoklJRvJoClKSKpqaNKSNpiM9GaIZyURmspA1mo3s
+5CAnd3E390RzkZs80XvJS75ofgpQkEIUjhahKMUoToloSUpROlqGspTjPspT
+gft5gAd5iIrRSlSmCg/zCI9SNVqNx6hODWpSi9rRx6lD3Wg96tOAhjxBI56M
+NqYJTaPNaE4LWtKKp2hNG9pG2/E07aMd6EgnOvMMz9Il2pVudI8+x/O8wIv0
+iPakF72jfehLP/ozIDqQl3iZVxgUfZXXGBx9nSG8ER3KMN5kOCMYyShGM4ax
+jGM8E5jIW0xiMlOYGp3GdGYwk1nR2cxhLvN4m/ksiC7kHRZFF7OEpSxjOStY
+GV3Fatawlnd5j3WsZwPvszG6ic1siW5lGx/wIdujH/ExO/iET6M72cVu9rCX
+fXwW/Zz9HOALDnKIw9Ev+Yqv+YYjfMt30e/5gR+jP/EzR6PHOM4v/MoJfuMk
+v/MHpzgdPcNZzkXPc4GLXOJy9Ap/cpW/uBa9zg1uRm9xm7+j//Avd/iPhB/C
+hCbWJCQlGcmjKUhJKlKThrSki6YnAxnJROZoFrKSjezkICd3cTf3RHORmzzR
+e8lLvmh+ClAwWojCFKEoxaLFKUHJaClKU4aylIveR3kqRO/nAR7kISpGK1GZ
+KjzMI9FHqUq16GNUp0a0JrWozePUidalHvWjDWjIEzTiyWhjmtA02ozmtIi2
+pBVPRVvThra042na0yHakU50jj7Ds3SJdqUb3XmO56Mv8CI9oj3pRW/60Dfa
+j/4MYCAv8TKvMIhXo68xmNejQ3iDodFhvMlwRjAyOorRjGEs46LjmcBE3mIS
+k5nCVKZFpzODmdFZzGZOdC7zeJv5LGAh77CIxdElLGVZdDkrWMkqVkfXsJZ3
+eY91rGcD77ORTWyObmEr2/iAD6Pb+YiPozv4hE/Zya7obvawl318xufs5wBf
+cJBDHObL6Fd8zTfRI3zLd9Hv+YEf+YmfOcqx6HF+4VdO8Bsn+Z0/OBU9zRnO
+co7zXOAil7gcvcKfXOUvrkWvc4Ob3OI2f/MP/3KH/0gYaiU0ccLMi6QkI3k0
+BSlJFU1NGtKSjvRkIGM0E5nJQlaykZ0c0Zzcxd3cQy5yk4d7yRvNR34KRAtS
+iMLRIhSlWLQ4JSgZLUVpylCWctGE2V55KnA/D0Qf5CEqRitRmSo8zCM8SlWq
+8RjVqRGtSS1qRx+nDnWj9ahPAxryBI14ksY0iTalGc1pQUta8VS0NW1oG23H
+07SnAx3pROfoMzxLF7rSLdqd53ieF3iRHvSkF73pQ1/60T86gIG8xMu8Eh3E
+q7wWHczrDOENhkaH8SbDGcFIRjGaMYyNjmM8E5jIW0xiMlOYGp3GdGYwk1nR
+2cxhbnQebzM/uoCFvBNdxGKWsJRlLGcFK1kVXc0a1kbf5T3WRdezgffZyCY2
+syW6lW18EP2Q7XzEx+zgEz6N7mQXu9nD3ug+PuNz9nMg+gUHOcRhvox+xdd8
+Ez3Ct3zH9/zAj/wU/ZmjHOM4v/ArJ/iNk9Hf+YNT0dOc4Wz0HOe5wEUuRS9z
+hT+5yl9c43r0Bje5Fb3N3/wT/Zc7/BdNGMwnJkk0KclIHk1BSlJFU5OGtKQj
+fTQDGclEZrJEs5KN7NEc5OQu7uaeaC5yk4d7yRvNR34KRAtSiMIUoSjFKE4J
+SlKK0pShbLQc91GeCtwffYAHeShakUpUpgoP8wiPRqtSjcei1alBTWpRO/o4
+dagbrUd9GkQb8gSNok/SmCY0pRnNaRFtSSueojVtaEu76NO0pwMd6URnnok+
+Sxe60o3u0ed4nheiL9KDnvSid7QPfelHfwYwkJd4mVeig3iV1xjM6wzhDYYy
+jDcZzghGMorRjGEs4xjPBCZG32ISk5nCVKYxnRnMZBazmcPc6DzeZn50AQt5
+J7qIxSyJLmUZy1nBSlaxOrqGtbzLe6xjPRt4n43RTWxmC1vZFv2AD9nOR3zM
+Dj6JfspOdkV3s4e90X18xufR/RzgCw5yiMN8Gf2Kr/kmeoRv+S76PT/wIz/x
+M0c5Fj3OL/waPcFvnOR3/uAUp6NnOMs5znOBi1yKXuYKf3KVv7jGdW5wk1vc
+jv7NP/wbvcN/JFwmJiYJSUkWTU4KUpKK1KQhLelITwYyRjORmSxkJRvZyRHN
+yV3czT3kiuYmD/dG85KP/BSgIIUoHC1CUYpFi1OCktFSlKZMtCzluC9angrc
+H32AB3mIilSiMlV4mEd4lKrRajxG9WgNalKL2jwerUNd6lGfBjTkiWgjnqQx
+TWhKM5rTgpa04ila04a2tONp2tOBjnSic/QZnqVLtCvd6B59jud5IfoiPegZ
+7UVv+tCXftH+DGBg9CVe5pXoIF7lNQbzOkN4g6EMi77JcEYwklHR0YxhbHQc
+45nARN5iEpOZwtToNKYzg5nMis5mDnOj83ib+dEFLOSd6CIWs4SlLIsuZwUr
+WcXq6BrW8m70PdaxPrqB99kY3cRmtrCVbXzAh2znIz5mR/QTPmUnu9jNHvay
+j8+in7OfA3zBweghDvNl9Cu+5pvoEb7lO77nB37kp+jPHOUYx/kl+isn+I2T
+/M4fnIqe5gxnOcd5LnAxeonLXIn+yVX+4hrXucFNbnGbv/mHf7nDfyQ8gEho
+Yk1C0mgykpMimpJUpI6mIS3pounJQMZoJjKTJZqV/wESuDuu
+       "], Null}]]}, 
+    TagBox[GraphicsGroupBox[{
+       {Hue[0.6, 0.7, 0.5], Opacity[0.5], Arrowheads[0.010890764261271077`], 
+        ArrowBox[CompressedData["
+1:eJx1nXl0ltW1h5HGghMQCInFoCEJITEkzTdJqQKnAkWqUOu0EBxKqdRaVAax
+ogJLbIsMWuSCiEWDIOrVKoIUpVUDVlG5WuqAV+tIq2gpQ8EWuUbxuvrtZ3/r
+/LLeP1yu33qy99lnfM/Z5/1eev3oyrMu+Vq7du1SRe3atW+X/++zYxZ98+4P
+9w+6/+9vD2se/FxLbf/N6/pfdVio3pnXyu/J/39QH+P/uGHuQ6d/qyks+fe5
+/ZqGpDa+/rXuY5ZMbHSdu7P14ykf7x808KdT1w28O7XR/LjG/0WrP5z62OTt
+Xv5008opf4bws6pf+8bskt1uP8m0cuwnC195xvaL6sf8y+0fNa0ce/iL0z/c
+9Mp1RYH63N665cZVnx70+n3ed8Svf3Zj5xDrDq7LrhjdOGtod9HFrlcP7bR4
+5As9RJe6vqfT9uk311S4Htbz6dYeI8pdT/zs22umfFwpuvD3p+xY9MH5D/QW
+XRW0f3rOfqOpW9/PvH0aTCunfeAdX9lTFibUur+8rmnjf8mmre1bP//S/d9n
+Wjn+lXecMe6yfTvab8S+i2nl2MNfe/K002sa6z2evK5zvfy/V8w4+p8Nouvb
+xP/d4y4++5Kth3v5I00rp3zlsx4ffcqbj3V0+7mmlWOvfOO55/Uesfwot3/e
+tHLslX++/wedNt3Uye2LPslr5djD13/v0Kj/G9Xk7TFh8edr9q9pdL0sPDh5
+14ZUYP3I6ybRqcD8hsc6FX5g8xUe61RYYfMRvkLmb8/n773ujse7eP16mVZO
+/ZT/4bbqia/17er2LaaVYw9v6dTpO0PGHO31nVpx+OrzGrv6+qr8gtc33fnQ
+BUWhj3DaA3vWR+XYzxDO+oc966Ny7CdL+5bbfKZ90dizPuKf9VE5/h+N+isV
+brP5jH809qwv+G+Q8uH4b4jiTQXmP/5jnQpDbD7CY50KzD94rFPhKZtP8Fin
+AvMHHuuv2tfGm7dvpFPh9zae4LFOhVGXrPhxp7u7OY91KhzIVJx/WvfuztG0
+H+sr7XuftD+c9lVOe2LP+qoc+y7S/ova3zVi1pxSjy/WqZB++bhTn/iizHms
+U+HPzUtPOjDpG87RlM/6S3ysv8qJb6T0/xVXlNU37ejh/mOdCkcPWHzCZaPL
+naPxz3ihfNZv5ZQ/V8bXA0d1K7nnTz3dPxp71nf8s74rx79yxiP2rO/KsYcT
+32l/WdDx3VNP8PhinQpTzpl9aN6YCuexToU/nrz54P3dezmPdSp0rTr8k2e3
+Fjja57/NF+Jn/VZO/MpZv7HX9RuOfYvMv7FHDtn91zmVHh+a58P5Nh95flxo
+WjnPjwtl/j6yb9ZHXw6ucv+xToUv39i0vfxQgcc6FUZubPd2/8erncc6Fe68
+b9Dr503u7RxN/YmP9iE+5bSPxr/rlhl/ntK3xv2jqf+nth7RPq2mldM+rbJ+
+wYkviRNfa7QepsLJVz+5ZcGOQnyxToW5F37+zEPL+zhHE99iW6+If6lp5cS/
+VNa3N4ec3LJldK37j3Uq1Pa9dsNHJXXOY50KP++24dGirQUe61TY/NmnD/Wa
+c6JzNO1DfLQf8Smn/bR+GVuPqX8/08qpfz9Zv7v/9aT7Bw6u9/hinQo/fmHq
+ijFfFDia+PBP/PhXTvxa/qOPrFt2zWN93X+sU6H97Z/ctnhSg/NYf7U/nZm+
+dW19o3M09X/Znke0zzbTymmfbfL8glO/JE79tkXPw1RYPn7SvK0fFuKLdSrs
+HfHIL3c1f9M5mviutOcd8U8xrZz4p8jzsfmOT1uKGprcf6xT4budygZ0m1vg
+sU6FPTec9PteHxU4mvpTPu1D+cppH3g4qu7fb91d5vvv86rvu3HBiuN8f668
+895ZKxes6Ob7czj7b+zZnyvHfoZw9t/Ysz9Xjv1k4eyvsWd/rRz7Nvtvy9f4
+/ts09uyv8c/+Wjn+df8dnwcL50Xs2V/in/2lcvzDyS99+Pai1IhDhfwS+sWV
+g6ZePq0ooG8fNnPnX/YfdH7omsMOLJ/ROcS6g2vKZ/9KfOxflRMfvOy+sSfv
+/E5395fXxW38s//EP/tP5fiHP3Lr0603PtPD/eV1qevqp4rfvaWqwvXw66ue
+6Dms3PWkzKlPvfVBpejC3z95/+S7au/tLbqqTfzsX4mf/aty4ocfcfzKGVN/
+Uuv+8rqmjX/2r/hn/6oc/8rZv2LP/lU59srZP2LP/lE59srZP2LP/lE59vBz
+/+vVi56urff2yOu6Nu3D/gv/7L+U4x9+d8eiQZ13Nri/vC6Ud2DgHZ0fPrfJ
+9e7p2RMueLDR9bJpa2eesz4luvD3zM/5Z657eMyYtM9PNPMTzfxEMz9j3cE1
+8yvWxa6ZH7Eudc38QDM/0LQf+0fal/2jctoXzvzCH/MLzfyKdZVr5kesa1wz
+PmJd55r+jXV9m/qxv6N+7O+UUz844wN/jA/1z/4L/+y/lONfOfsb7NnfKMde
+Oc9/7PX5D8fe9y82vqkP4xvN+M4882r9ZY8Xxjea/dExlg9g/1RsWjn7Jzjz
+A3/MDzTzI9YdXLP/wT/7o2LJT8DZH8FpHzjtl8RpPzjzk3iYn9o+D1o+g/ZZ
+bVo57bNa8h9w6pfEqR+c+OHUL4lTPzjrC/VhfUGzvqBZX7T+wy1fQv1HmFZO
+/eGsL/hjfdH+x572wV457QOn/nDaJ4nTPhr/VZbvoX5Xm1ZO/eDEByf+JE78
+cNZX2oP1Fc36Gusa16yvsa5zTf0pn/ahfOW0j9affBft86xp5bQPnPrDaZ8k
+TvvAiQ9O/Emc+OE8X2gPni86vsnXUb8S08qpH5znC/54vqBZn2Nd+HvW57/0
+++T+a7pnfH1Gs76iWV/RrK+x7uCa9S3Wxa5ZH2Jd6pr+of70X4nkN+H0H5z1
+BX+sL2jWh1gX/p7+xT/9j3/l9D+c+YU/5hea/iUfSv+Pk/wonP6HU3847ZPE
+aR8485t4mN9o5nes61wzvmNd+HvGJ5rxqe1LfLQv8SmnfeG3zv7wgyPnVXj+
+oXxRdd9L5lV6fkL5vv3V12wp7en5CeYH8TA/0IPXbdn7WWnG7fM6LToTxli+
+Ao6mfPIbxDc9gRPfDOHkN7An/6Ec+8nCyW9gT35DOfbKyV9gT/5COfZw2ucM
+i4f2iXUmNFt58FhnQlnkL+2a8sl/EB/5D+XEp5z8BPbkJ5RjDye+X5s/4ot1
+JhRFf58WnQnB8hVwNOWT3yC+kQmc+EZG/jLhessn4B+NPfkH/M9N4PifG/nL
+hMctn4B/NPbkH/D/fALHv3LyD9iTf1COvXLyD9iTf1COvXLyD9iTf1COvXLy
+C9iTX1COvXLOz9hzflaOPZz++Ze1D/2Dxp7zK/45vyrHPxz/x1p74T/WmbDe
+2gO+XtqH8y3lc75VTvnKOd9iz/lWOfbKOd9iz/lWOfZw6neO9Rf1O0f6j/Mf
+/jn/Kcc/HP/7o/5Mu8ae8xf+OX8px79yzifYcz5Rjj2c+BZE4yEtOhMarb/g
+sc6EF60/4LHOhMui9k67Jj7OD8TP+UE58cPx3zFq77ToTLjX2gt+r7Qf+3/K
+Z/+vnPLh+B8StWdadCZMiuJNu8Y/+0/KZ/+pnPKVs7/CXvdXcOzhxLcpqk9a
+dCZ0sfLgXeR8w309+9+1ppWz/4Wzv4Wz/03i7H/hxHdxVJ+06Ex4OPr7tOhM
++MLeJ4Cj2b9SPvtbylfO/hZO+8PpnyRO/2j9zrD3GXz/FelM+I29zwBH0/68
+L0H/HPZmXiunf+C0P5z+SeL0D5z4dtr7EMSHpv2wp32xV077wmk/OO2bxGlf
+ja+/vQ9BfGjah/dJaL8zTSun/c6U/rnJ3qfAP5r2w572xV457QunfeC0XxKn
+/eC0D5z2S+K0n9bvf+19DuoX60yosfc54LHOhKn2Pgc81pnwjL3PAY91JnSz
+9yngsc6EH9n7FPBYZ8Iaex8CHutMaGfvQ8DR9D/vEzE+mmX+wRkfzdF8zYTv
+2/sU+EfT/9gzPprl/SU440P932XvQ+A/1pmw296HgKMZP/hnfOFfOeMLzviB
+M76SOOOrTfz2PoXHH+lMGGrvU8DRtD/vY9E/e+T9LDj9sydar75qH3sfw9sn
+0pmw2N4ngMc6EwbY+wDwWGf8PhGOpn+Jj/4nPuX0/x5ZX+H0XxKn/7T+N9t9
+EPGh6T/s6V/sldO/6j9n+Uz85yS/yvtq9N8AWZ/h9N+AaD3PhHeifFDaNfnT
+Gx7sWjN7ciF/iqZ98U/741857Q+/8ZjXn73450UBf18/7rfzWvYcdP8Tzmhc
+8strO4dYd3BN/+Cf/sO/cvoP/sDQweu2Dezu/vK62PXxl+xddunGHqJLXdN/
++Kd/8a+c/oXfMOekrX2G9vZ821G3TS2dNbSP5/eUX3rduJpZQ6s8vwcnv4Y9
++Tfl2JN/G/70S09/UVHh9Vn4i9/8svU75a6LXqnq99z2StGFv39q+7QHF6zo
+LbrK9TX7tp4welyt6BrXxEd+j/jJ/ykn/snCye9hT35POfbw9GE1i6qq6z2e
+vK5rEx/5P/yT/1OOf/iuLtd33P1Bg/vL6/o2/snf4Z/8nXL8Kyd/hz35O+XY
+Kye/hj35NeXYw8/u8tOBb53V5PW5t+KV69evamxTP/Jr+Ce/phz/8KZjFx0c
+9GjK/eV1Uxv/5NfwT35NOf7hx1S0rL2nW8b95XXaNetf7QnplYu3FtY/NP7J
+z1E++TnllA9n/cMf65/6J3+Hf/J3yvEPZ/3EH+snmvUv1sWuWf9iXRo0PvKD
+xEd+UDnxKSc/iD35QeXYKyc/iD35QeXYKyf/hz35P+XYw1k/aQ/WT20f8nv4
+J7+nHP/Kye9hT35POfZw1m/iYf3W+Mj/4Z/8n3L8Kye/hz35PeXYw3l+EA/P
+D42P/B7+ye8pxz+c5w/+eP6of/J/+Cf/pxz/ysm/YU/+TTn2ysmfYU/+TDn2
+cJ5f1Ifnl9aP/Bj+yY8px79y8mPYkx9Tjj2c5x/x8PzT+Mjv4J/8jnL8Kyd/
+gT35C+XYK+f8jj3nd+XYK+d8hj3nM+XYw3l+0h48P9E8/2Ld1Kb9OD9QPucH
+5ZSvnP0p9ro/hWOv5wt+D8P5Y778PgbO+QPO85f68PxFc37AnvPFfMkPwTlf
+wNn/wzkfJHHOB3Ce/1sX/qDinr5Zf/6j2d9jz/4fe+Xs/+E8//HH8x/N8zvW
+HVzz/I51sWv6j/LpX8pXTv9q//F7JPr3LdPK6V84/QOn/5I4/Qdn/0F92H+g
+6T/s6V/sldO/cJ7f+OP5rf2LPf2LvXL6F87zF388f9E8/2Jd5ZrnV6xr2vQv
+5dO/lK+c/tX+4/dk9O+JppXTv3D6D07/JnH6F87zi/rw/ELz/Ih14e9ZP9Gs
+nzo+KJ/xQfnKGR9w+hdO/ydx+h/O+k08rN/af9jTf9grp//grJ/4Y/1E7+yz
+c8IRV2U9f5DXGdHZMNryAfBYZ8NwO2/Dh8v3U/i9IeNnmmnljB84/pfZeRz/
+y+T7AdgzvrBXzviC079w+j+J0/8aX4md54mvRN7PwZ7xgb1yxof6n2/nefzH
+Ohva23kdHutsGGjncXiss+FaO0/DY50N6+08DF8v52fiZ3wSv3LGp/Y/vzf1
+75OYVu7fJ5Hfp8L99+0J3H/fbpr67bfzN/WLdTaU2XkZXia/38G///7ItHL/
+/ZGUv87Ou/iPdTacZedZeKyz4Z92XoX/U96PoHx//8i0cn//SOK7xc6z+I91
+NvS18yg81tmwxc6b8C1yPqV8z8+YVu75GYnvUjtv4v9S+f0pvxdmfJWZVs74
+guP/63YexX+ss+EeO0/CY50Np9p5EB7rbJho5z34RHl/nfgY38SnnPGt8bfY
+eRD/LfL+NvaMX+yVM37hjB844yuJM740vk52niS+WGfDhXZehF8o50v8M37w
+r5zxo+X/1s6L+I91NrTa+RCOZvzwe3PG13jTyhlfcPx/z86L+I91Niy18yA8
+1tnwsZ3X4B/L/RblM37Gy+/j4YwfOP0PZ3wkccYHnP6HMz6SOOMDTv/B6d8k
+Tv/CJ82bvWHIl3W+n2ldsrld85f1fn+ifNT0dV2av+zj9ye0bz87z9K+aOy5
+P8E/9yvK8T9D9k+/svMU/tHYc7+Bf+4/lON/snDuN7DnfkM59o9G+61s2Gbn
+AeKLdTZU234THutsmBLtZzKis+HpaD3PuCY+7k+In/sT5cSvnPsR7LkfUY69
+cu5HsOd+RDn2XWT/VRytNxnR2fDDaD3IiM6G1fY+BRxN+dy/EB/3L8qJb6Ts
+/w4tyb+Pgf9YZ8MIe58CjsY/9zOUz/2McspXzv0L9ty/KMf++Wg/+tX5wN7H
+8PNBpLPhH/Y+BhyNf+5fKJ/7F+WUD8f/nfY+Bf7RPj5tv4h/7l+U479XtN/M
+hiH2Pgb+Y/1V/ex9Cq9fpLNhob1PAY91NvS39yngsc6G9+19Cjia+Lm/oX7c
+3yinfi2yv51t70PgH4099zv4535HOf6Vc7+Dvf/+Wjj2rdF+Ohsa7X0K4kNj
+z/0P/rn/UY7/pbJ/3mbvU/j6GulsuN7uG+GxzoYqy4fC0ZTP/RHxcX+knPj6
+6f49yhdkXJP/vPrrk+5cO6eQ/0QvfX9rw+1TiwI6val5TNM/DjqnfO6niI/7
+KeXEB799f6+fHLi6s/vP6w5B/XM/hX/up5TjXzn3U9hzP6Uce+XcP2HP/ZNy
+7JVzv4S9/75XOPbw09t/+8wTT+nu7ZHXxa6/d9TfJrz5RA/Rpa6rj9w85Jnj
+K1wPL5k/56YB5W3al/sr4uP+SjnxKef+Cnvur5Rjr5z7Key5n1KOPXzVLT1e
+Pe69Sq9PXhfq27vblWOnNPcWXdWm/txvUT73W8opXzn3V9hzf6Uce/iqJX/c
+u+Xi2kL8/9E1hXjLj51RWVEvuq5N/Nx/UT73X8opH75q+YSjr32/oVD+f3R9
+G//cj+Gf+zHl+IcvXPjDly49s6kQf+9Nd7y8vLGNf+7P8M/9mXL8w195be6i
+RY+k3F9eN7Xxz/0Y/rkfU45/5dyPYT9Azg9w7OFdy343ZmOXjMeT12nXZ53/
+XuWuiVnRmTbxc39D+fPlfAGnfL3f6nntgh6bdhTWdzTrO5r1Hc36HOsOrimf
++wfi4/5BOfEpJ/+NPflv5dgrJz+JPflJ5djDWV+pD+ur1o/8le9v5XwD9/2t
+adZn/LE+o1mf0azPWj75D8on/6Gc8pVzvsZez9dw7DX/wffyyI/8zrRy8iNw
+8hNw8hdJnPwFnPwEnPxFEid/ASc/ASd/kcTJX8DJT8DJXyRx8hdwnk/0J88n
+7V/s6Z/fyfkQTv/Aeb7hj+cbmv7he4b+/W95fx/u3/82Tf/A/fuxCdy/H2ua
+55vX355vaPoPe/9+l2nl/v0u0zwfvf72fETTv9j7729NK/ff35qmf+H+/l8C
+9/f/qL89X73+9nxF83z0+O35iOb5FuvC3/N8iXXaNc+XWGfajD/i9/OzaeV+
+fjbN8+WZ3auXbB2c8+cLmvHF9zIZf2fL9zPhjL+z5fcfcMZfEmf8wXm+EQ/P
+NzTPt1h3cM34wz/jE//KGZ9wxhec8ZfEGX9wnk/Ew/MJzfjDnvGJvXLG59mS
+/4HT/0mc/tf+43uj9O8K08rpXzj9B6d/kzj9C+f5SnvwfEXzfEXzfNX+xT/9
+i3/l9C+c9R1/rO9o1udYV7mm//HP+MC/csaHl2/rq5dv66uXZ+tjrOvajB/8
+M37wr5zx4+Xb+ubl2/qGZvxgz/jCXjnjS8cP36tlfO2T79fCGV9w1levv62v
+aMYX9ow/7JUz/uCsz/hjfUazPsc67Zr1OdaZNuOT8hmf++T3aXDGJ5z1+Wdj
+t5a8u7ywPqNZH9Gsj2jWx1h3cM36FOti18zPWJe6Zn6imZ9o5lesC3/P/Ip1
+VeHvbX7EusY184v2Y/7RfsqZf3Dml5dv88vLs/kR68LfMz7d3sYnmvEV68Lf
+M75inXbN/CV+5jfxK2d+75P8Opz5m8SZvzo/+b2i/z7UtHL/fahp5h/cf/+Z
+wP33n6aZX7QH88v7/zdH7Cx7Oef3h3ldeJ+K+YV///2naeX++0/T+B/F95DM
+f6xzYSjfOzIe61xYyveMjC+V7xtRvv++lPKF++9LJb4uvO9k/rvI75+w9/ef
+TSv395/F/2y+V2T+Y50Lh6bb94qMoxlf+Pf8kNzPwD0/ZHrszW+sHLuh0fvz
+wIvz/v3OBU1+f6z8tJmHt/5hQ1+/P4Zz/4s998PKsZ8hnPtd7Ln/VY79ZOn/
+b/O9JGufWOfCVXzvyDga/9wPUz73w8opXzn3s9hzP6sce+Xcz2LP/axy7O+T
+8fEI31Oy+sU6F3byPSDjaPxzv0v53O8qp3zl3L9iz/2rcuxHSv9043tMFl+s
+v6of3xOifqbxz/0r5c+V/oVT/txoPOTCSL7nY/5jnQu7eN/MOBr/3N9SPve3
+yin/eemfuXyPyfzHOhdq+R6S8Vjnwma+d2Q81rnwY76nYxxNfNz/Ej/3v8qJ
+Xzn3u9hzv6sc+17Sv+35XpLFF+tcWM73eIyj8c/9K+W3yPiAU35LNJ5yYSDf
+QzL/sc6FK/gej/FY58KTfA/IeKxz4Wi+x2McTXzc7xI/97vKif9CGZ9j+J6P
++Y91LjzA92SMo/HP/TDlt8r4hlN+azQfcuH/7P4E/2jsuR/GP/fDyvGvnPtb
+7Lm/VY59P5kfp/G9Eosv1rmwhO9NGEfjn/tZyud+VjnlK+f+FfspMv/g2Cvn
+/hV77l+VY6+c+1fsV8v8gWOvnPtX7Ll/VY69cu5Hsed+VDn2V8v82sH3Iqx/
+Yp0LOb43YDzWufALfo9kPNa58Cq/ZzGOJj7uZ4mf+1nlxK+c+1nsS2T+w7Ev
+idaLXKjk9xYWHxp77l/xz/2rcvyPk/VhEu/rm/9Y58JG3qc2jsY/97eUv1bW
+Fzjlr43Wo1zozPu05j/WuXAR71Maj3UuPMR9hfFY58Ln9r4XPNa5cDr5RuOx
+zoU7yDcZj3Uu/J3zsPFY58KyaL+fFZ0Lg+19Jzia9uN+mvblflo57auc+2fs
+uX9Wjr1y7pexb5b1EY69cu6Psef+WDn2yrk/xp77Y+XYD5D5v9PeF/P9r2ns
+uR/GP/fDyvGvnPtb7N+S9QOOvXLub7E/UeY3HPsTo/UgF261992oX6xz4Vv2
+vhs81rnwnr3vBkdTPvfDxMf9sHLimybrx6/4HpD5R2PP/bDvn2V9gfv+WTj3
+u9hzv6sc+zJZXxrsfTfii3UuvGbvq8FjnQvX8T0c42jK5/6Y+Lg/Vk5842V9
+q7T33Xz9N40995/45/5TOf6Vc3/l+3/Tyn3/L5z7D+y5/1COvXLy29iT31aO
+/QpZf1/g96rWPmjsyb/hn/ybcvzvk/V7or1vgn809uRXfH2U/Arc10fJ7/Hv
+vZH/GybfJ4OT/4P7v99qmvxfEif/B/d/X8s0+bskTv5uWPS8yoUy7pOtfWKd
+C09xn2M81rlwSZRvzLomP991255bd31RyM+j/fvYFg/5PY9POPk9+BnTttx0
+xFVFAX+3719U3O3jg+7/UFVZzzendA6x7uB61EdrRr3Wv7voYtf+/SArj/wg
+5SsnPwhfc8oblU9s6OH+8rrUtb//bn9P/g975eT/hsn+As74TeKMXx2f/HuE
+jN+9ppUzfuGHD5954OXyCq/PkQsP7VrZv9z12ikL33r27UrRhb9nfOOf8b9X
+/n1EOOMffvFdqzZuWNbb/eV1lWvGP/bMD+yVMz/gR73w+KqHLqh1f3ld4/qx
+T/5n7t3l9aLrgo5v/DO+8a+c8Q0fd/x7Vy5+u8H95XWhvJuqpz0wZGST687D
+958zZ1ljm/GLf8Yv/pUzfuGMPzjjM4kzPuHvbGh/58CHUx5PXhfizXx//q+/
+1SkjOu16zgfdZ6WvyIou/P1705qv6vunnOjC37P+bDitU+fW0Sf5+oM+2vo3
+1jWumT/Uj/m1V/afcOaXzh/+PUrm1xLTyplf8PKfHHvD6zOP8X/PcuUZR25t
+3tg1JPENjS++M+iGw53fNS6Tu2Lzsc7XXb/mj5XPlSfyy4fd/LfK50qcvz58
+96JrxvdyPva8vm+/Mr4qkV/38+wbq1463vm720Pn3/+0xvmle2aeV3JZbSJ/
+9tXLx5dcVu18x7RFc1on1Duf+KtX/3zu5Q2J/KWfbXr/3MvrnP8/LBYioQ==
+
+         "]]}, 
+       {Hue[0.625, 0.5, 0.7], PointBox[CompressedData["
+1:eJxl3XvY3dOZ/3HNLxp1yEFOJoIkTxJJc5jsZ+9NtRWrFRNpyajTpUKNUaqK
+ioiKQ1yYloS2+EWDIhHHYdQpo9JpJVFUjU7q+KO0agY1qUPFVI0QPzPP/Vr7
+Wuv5y/V2f773utfhe++17rX3k9F//839j+6z2WabDe632Wb/89/3tlny19e+
+vGGPm//z+ZnL9vzF6gm7PbRyt1M+lsau7+Hre/7/HjsH//Gcxbd98VPT0tI/
+H7TrtBmNNU//n6Fzlp40NXP76o2vznt1wx7Tvz5/5fRrG2vCb2btfeX2l+f/
++OQXc3tnBWtvYTD9/mOf/Kvzh7ye9XOD6U8Opr9unxe/MmnOf2X93cH0+NGz
+Xl77+Bl9k/gu3/jIeTf85d0c7/uT9/3+N84bkErul3n4iYdOPXevoRUPynz7
+Xv0vm/3LERUPy3x9/xfP+u74UZln7nD/xhH7jsx80nufvnPeq2Mq7ug/+8qS
+l758y7iKu1I93juc/8y0wZPfy+MxJdh44C0ef2N4On5Cfr6Hx/fyt3Ttuj4b
+3/8w+7spmD9Mv8XCo45765U+a+gHBtPjJ3+29xfHT52U2+vhiZmX/+OKhVv/
+aUrFk3rF9zfbH3HA0es2z+3NDtYepj/33kM/++yPt8j6xcH0mH7NQQeP23f5
+Vln/cDA9pn9/w5f6r72gf9b3fbuH6fE9X9h0yH8fMi335/jL3r9zw51TM1+V
+bj35tVWN5H3t4WkVN5L3i73kRvpSvC/sJTfSing/2HFeTw/feMaV9w7M/Rkd
+rD+Y/l9+MPakJydvm/Wrg+nx6v79Pzdjzta5P/NHbX77wVO3zfnosKfXXn3b
+YX2TfESvf/TyCb18Qi+f0Msn9CdX4zEy3g/jgfmTb/iTX/i7uxjPRvpBvB/8
+Yf68r/x5P/mbUsTTSN4v/kpupBmx3tlLbiTrn73kRrov1jN7yY1kfbOX/NH4
+xXrI41dwI/0k5p+95EY65OgVX+1/7eBsL7mR3mmO+vLeQ4dmOzae8pXxlJ+M
+503V+Bs/evmJfmA1vkv6XLPvuYuG5fZLbqTux7b//E8/GJ7tJTfSr5ddscs7
+c/8q27F45DPxyF/imV3N54knDp807ZUR2V/JjbT17pftdNyhI7Mda8/8a0/+
+097ian3cstXgIdf/2w7ZH+ZPvuRPfuQP01s/9PIjPdb+3r+5eIvffX6n3H7J
+jTTvwPM3XThnVLaX3Eg//8xD7948dHS2l9xI23Zt/vaD6zp2nN/XWM/ilf/E
+i+nlQ3r5j351tf6P3HLG6/++aExuH8uvX473QX49PFh+Pbx6X+5469w/fLhn
+V/ZXciN9+MzaF0du6thLbqTZazZ7frd7x2Z7yY109U17PH3wyeOyHeu/ePVf
+fPpfx/va9xb+et7k8dkf1v+/xPuu/xuD9X9jlQ/otc+u/Y1FPmmkz5z6s0cu
+fqXTfsmNtPjw9x+4bfnO2Y7Fd1nkA/FdESy+K6p88eyMz6x+5NAJ2V/JjTRh
+8umr/jBkYraX3EjfGrzq7r7rOvaSG+mh9/5y2+hFn8x2bHzEa3zEZ3yw/jUj
+n+nfrsH6t2uV74b++y43T99zUm6/5Eb66i/nr5jzQceOxac98fEvvrq9u+9Y
+edVpP56c/ZXcSH0uf/sHl82dku0lf7RfOrv7krsmTc12rP+PRb7W/6eC9f+p
+Kp/Ti59d/E8VnweNtPyYuReue7nTfsmN9Oa+d3z7tWV/ne1YfN+M/C++ecHi
+m1d9Piy78i+r+06Zlv2V3Eh/03/47oMXd+wlN9Ib5+zyk9F/6Nix/otH/7Wv
+/zhtNfHPz107PO8HDx5703kXr9g+7wcHvHnudRevGJz3g/T2g/T2g/T2g/T2
+g/T2g/T2g/T2e/T2d/S99ntxPs77vWD+7Pf4s7/jr97vleeBznmBP/sd/uxv
++MPO6y8/v6Sx76bOeR0/et0e809Y0Dfhy2eevf43G97N9k2nfeyd5QsHpJL7
+ZRaP/ZR47J/Eg4ffdORn1n9uaH6+hwf18mc/xJ/9D3/4jkvu33jeAyPy8z08
+LPPY+wb97ntdozLPOrPrpzvMHJl5bvPz9z330piKO/qf3XzyNRNuHFdxV694
+7afEa/8kXvyJHa9bOP9rE/LzPTy+lz/7Kf7sn/jD9PZT9PZP9Divx9iv0Nu/
+0GN6+xl6+xd6fND/feIr90+YlPvTwxN79c/+gD/7Af7wtVv03WPA+in5+R7u
++H9n+pUDfnTQtMyvn9Xa6bBbp2a+asFdZx94T6Pijt77cdF+K380Z053fj+w
+9wN7P7D3o+R+ma33kgdltn5LHpbZ+sXWLzae9jvG0/7GeGLr3fPWO7beS+7K
+bP2WPD6z+S95YmbzWfKkXv2xP9Ef+xH9webf8+a/9mc/wZ/9A3+Y3uc3vc9r
+ekzv847e5xt9/vyN9Sg+6xFbj80Hnph03L2d9Yh93m8T5zmf94OCfd5j69fz
+1i+2fkvul9nnufZ8nvPv8xwbD3rjwW48sPdDe96Pur+3xnlTf28P1t/bq/Mo
+vXjZxYvFSy9edvFi76v4vK/Y+4q9r3V/ZsX5VX/2DdYf7H31vPe1nh/+9Nfz
++ov1l15/2fUXi/eUOE+L99Rg8WLx0IuHXTxYvtEf+QbLNyWPzyzflDwxs/6K
+R3+1r79Yf9UH9PfBYP3F+kuvv+z6i8VDLx528WD5Un/ky3o9qVeId0iweLF8
+6Xn5EstPJXf08tNvdn375tOGNnN+wvINlm+wfFNyv8zyQcmDMnv/Sh6W2XwY
+D/Oh/+YDe189733F3r+SO3rzqT3zyb/5xNa75613bD7Vf8znUcHmE+svvf6y
+6y/2PmnP+4S9TyVPzGw9ltzRW1/Y+qrHS7zGS3zGC19y/ssvbXnhqHw+HLlk
+7OSjLxyTz4dvbRh72iPDdsjnQ+tXe9Yv3nPlI2++N6yZ/fVwd8XNNCfOj+xY
+PM6f4nH+FM/CSu/8Se/8Se/8Se/8Se+8SY/pnS/pnSfpsf7tE+3pX8nNtCz8
+s5fcTMMLf92ZxeN8Kh7nUfFgeudHeudFeqz978fz2i+5mfoW+u6KmynF+ZEd
+i8f5UzzOm+KZXTzfTGfG+Y4/zJ/zIX/Og/wtLp5vpnvjfMcf5s/5kD/nQf4e
+rvTOh/TOg/Q4r6c4/9E7D9JjeudDeudBekzv/EfvvEeP6Z1v6J1n6LHx+6/o
+r/HD/Dlf8Oc8wR/mb7voL38lN9M90T/2e6r+On9oz3lDe5je+YPeeYMe0zt/
+0Dtv0GPxHhjjK94Dq/G2f+fPfp0/zN+GYvy7M/Nnf82f/TR/mN7+lN5+lB5r
+/+JivrorbqapMb7sJTfTozGe7CU303HF+HVnFq/9pXjtJ8WL+duiGL/uipvp
+xhgP9hur8bF/1J79ovYwfzOK8equuJnmFvF1Z9ae/Y327Ge0h+l9vtP7PKfH
+2l9bxNtdcTMNDP/s2H7J/Zb90l3B9kvYfonefondfglr/4gi3u6Km+lHhb67
+4mb6IO7X2LH9kHjsh7RvP4SNL73xZTe+dfz7xP1d/rwvuJl+GPd37Nj4uh80
+vh97toeNLza+9MaX3fhi7a+P+z7tY+PDn/HxvPHBxofe+LAbn7r93eK+T/tY
+/91/6v9+wfq/XzWeF8T9IH/Y+PBnfDxvfLD+0+s/u/5j/afXf3b9r+P9f3H/
+KN6Sm2l83D+yl9xM8+P+kb3kZnog7h/ZS26mwXE/yF5yM/193A+yl9xMd8Z9
+H3vJzbRZ3PexY/Pr/tr8Lgs2v8uK96OZ/jbuB/nD5pc/8+t581v7uybu+/gr
+uZlej/s+dmx9aM/64N/6wNYHvfXBbn30ii/uB3N8BTfTXnE/yI6Nr/t84/tG
+sPF9o3j/P+pv3Cfm/hbcTJfF/Rp7yc20e9yXsZfczPV/dmz+xGv+xGf+3qjy
+E73xZzf+df++G/Ve7WPzw5/58bz5qf21oz7DX7uqD/k+g/HfPdj4717kv2b6
+bXFe7s6s/nPOrduOP//kTv0HGz/tGT/+jR8+b5unHzziW32T5z++/T9duPqN
+d7O/4/eZuvTbpw9IJffLbPy1Z/z5N/74lr32XPnU9KH5+R4elHnHo9+86tg1
+Iyoeltn8aM/88G9+8DmLdlm3817jcn1hqx/MH3buXjvn+sWxZxw1/ty9unL9
+gl59gV59gV59Ydb9v7r/g1GjcnyX/sMPv73xcyMz9328a9dfvDim4o7+vhcX
+3HrxinEVd2U+7a11Ox161ISKx2cWr/qGeNU3xKu+Qa++Qa+eQY+7PzZ+SdfY
+Sbm9Hp7Yq331D/7UO/jDrw08c4vXX5qSn+/hSb38qV/wp17BH6ZXv6BXr6DH
+9OoL9OoJ9PiAgV+f/tz+03J8N456/Mx7bpjaK171Bf7UE/jD07Zb8u4edzfy
+8z08rZc/9QX+1BP4w9uMWn3X9YOb+fke7s4sX0zYqfu6y9Z18gXWnvqE9tQj
+tIflC8/LF7U/9Qv+1Cv4w/KL5+UXLF+UPCizfFHysFTHoz4iHvUQ8WB69RF6
+9RB6TK8+Qq8eQo/p1T/o1TvosfyiP/JL3T/1Df7UM/jD9Oob9OoZ9Fj+0p78
+Vbev/sGfegd/mF59g149gx7Lj9qTH+v21Tf4U8/gD8unnpdPa3/qH/ypd/CH
+6dUf6NUb6DG9+gG9egE9ln/FJ//W8aoP8KcewB+mVx+gVw+gx/K19uTrun3n
+Yf6cf/nD9M6H9M6D9JjeeYre+Yke09tf09tP02P5XX/kdyxflzytV//tF7Vn
+f6g9TG//Qm+/Qr97df71fVf7x4uC7R+xzwPx+TzA9of82R963v4Q29/R29+x
+299hnzfrLv3SqOsnt/LnDbZ/48/+zfP2b9jnjed93mCfHyX3y+zzo+RBmc2H
+eMyH9s3HRdX3jX1f2Hw8F2w+sPGmN97sxhv7PBOfzzNsPvgzH543H9jnh+d9
+ftTzwZ/58Lz5wD4PPO/zAMvXJXdlln9LHt9rPsRjPrRvPrD58P1s8/HJYPOB
+zQe9+WA3H1j+FZ/8i+XHkjt6+QXLL/V8isd8at98YvNFb77YzReWv7Qnf9Xj
+zZ/x9rzxxvKL5+UXvH7n9cd/4pRWPm/1cLPiVjo0zk/sJbfSrDivsM+qfn/q
++/bme0Gw+cb8XRXnGf6w9cCf9eB56wGbL3rzxW6+6vaHxPlH+0Oq+1r+zKfn
+zWft76I4//BXciv1ifMOe8mtND3ON+wlt9LpcV5hL7mV7onzBzu2nvTHehK/
+9YTNp99H5N97Buffe1a/n6DPv3cKzr93ChbvhjjfiLfkVhoe5xH24dX3b7WX
+vw8cnL8PXLW3Ms4T/JXcSvvH+YG95Fb6U5wX2P9U3eeJJ98/B+f75yqe78V5
+gr+SW2lynA/YS26lR+I8wI7Nt3jyeTU4n1ereI6N8wB/2HrwexXrYXiw9YD5
++3icF/gruZWuj/0/e8mt9PnYz7OX3Eonxf6d/aTq+3bitR7FZz3W8a6O/T1/
+q6vvp/FnvXneesPWA731wG491O33j/OA9ktupcNj/8+Ozbf2zDf/5rtu759i
+/89fya20Mc4D7Nh68Psk6+GYYOsB8/eFOA/wV3IrXRH7f/aSW+nV2K+zY/Mt
+HvOtffONzSe9+WQ3n9h80ptPdvOJzQe9+WA3H3juheevmvHhxPx5vHHpQ5st
++3BSrocectbKgcs+3DnXQ43HrnEeMR6YP/VS/tRL+VtYfb5/J/bT/GH+1DP5
+U8/kTz2TXj2TXv2S/u7i87+Vnor9o/ZLbqWxsd9hL7mV5hWfx82KW+n+It81
+M4tXvVS86qPixfTqofTqn/SYXj2UXv2TfmC1HxhUvK/Nilvp74r3q1lxK90e
+933sWDzqreJRXxXP7Gr/sWlpz/0gfyW30r5x38eOtaceqz31V+1hevVWevVV
++oeL/c5H+8m4H8z7yYJb6Y9xP8iOtafeqj31Ve1h/q6O+z7+cF5PsV/hT32V
+v9HF/qaVZsT9IH8lfxR/3Pfl+AtupUvjvo+95FbaLe772Etupd/HfR871h/1
+Wv1Rn9Wf1dV+6vy4v+MP86eey5/6LX+YXj2XXv2WfmOxP2ulqXHfp33Mn3ov
+f+q7/F1R7ceeivu+nJ8KbqUzo77PXnIrdUW9hx2LR71YPOrD4tm13v8V57tm
+ZvWeUz8+9+q7FnXqPfiK36+bcvn8vgl3r102Z9of38128ahHi0f9WTz48g2j
+v/bOqQOyvx7ul2p/6tH8qT/zh+nVo+nVn+kxvXozvfoyPaZXT6ZXP6bHX+zz
+6f0++dmhuT89PCjzF7b6j+Of/emIiodlHrvlQzMe2HFU5llDLlp0we4je42P
+erV41KfFg+nVq+nVp+kxvXo0vfozPb7heyOe2P6FMTm+Hu7EP27wN4+ct2xc
+xV29+qOerT31a+1hevVqevVpenzD0p+/+cgREzrx/S+P78QzcruFY0ZNqnhi
+r/jUu7Wnvq09fMPy47c+/fdTOu39L0/q5U89nD/1b/7wpZf+3a+O3W9aJ75x
+a698bPnUXv7Uy/lTH+cPP/7k4iVL7mjk53t4Wi9/6uH8qX/zh+nVw+nVv+nx
+tsP/ec6agc3cXg93Z97/yy+Mee2kVsXNXvGp92pPfVd7dT17h9MvHrH2lU5+
+w/Iblt+wfFVyv8ziUe8Uj/qmeDC9eh29+hw9plePoVd/ocfyj/jknzpe5/28
+XwrO+6Vg+crz8hWWr7B8VbfnvKk950vtYXrnIXrnH3rsfOnvVThf/nOw8yV2
+/qN3/mN3/sPOf/TOf+zOf9j5j975j935Dzv/0Tv/sTv/YfnW+Mq39XjzZ/w8
+b/yw/Ox5+RkbX3/vI/99tuD899mCjS99/vtEwfnvEwXLz7k/kZ+x8ecv/z4/
+OP8+P1g+z/2JfI7ND3/59xzB+fccweaHPn+/Ijh/v0J/Iv/n/kT+x/J5ji/y
+OZafS+7o5c+SuzPLnyU3e60P/cnnl+B8fgmWPx94/fal6/Zs5/yJrQ9/78X6
+OCDY+jig+n4nvfXBbn1g+Vl78jOWn0vul9n60Z71w7/1g60PeuuD3frA8q32
+5Fts/fBn/Xje+jmgOv/Smx9283NA9fd1/L0b478i2Phj409v/NmNP5b/9Uf+
+x/I/lv/r8dee8eff+GP5zfPyG5avSu7KbP60Z/74N3+5vcg/ub3IP9l/5JOS
+J/aaX+2ZX/7Nb24v8kNuL/IDNv/8mX/Pm39s/v09I/P/VrD5x/JP7k/kH2x9
+8Gd9eN76wPKV5+UrLF+V3J1Zviq52Wv9iMf60b71g+Wrbxy5bsjvlnfyFZZP
+sHyC5ZOS+2X2vpc8KLP3peRhmb0v2PuCrf+SO3rrv+Sujj7Wc8njM3s/jKf3
+w/h5P7D1n9uL9Z/9x3ouuaO33vLzsd6w9VNyR2/9lNyd2funP94/8Xv/3qrq
+d/TeL3bv11vV3wfzff38+4bg/PuGYO8Pff79QnD+/UKw9a8/1n+erx9+Yv3w
+x9q53t/Dnft574f28u8XgvPvF4L5O8Tvq8Nfye20l99Th73kdrrC76fDfkX1
+e2rx5N9HBOffR1TxDHSfHv6w+eUvfx8sOH8frPJ3vt9Hh7+S22nTWT31c3Zs
+fWgvn6eD83k6+MjvPnPdkaum5vl459EL//zbw6bl+5i9z95847+smpzvY+jd
+t9C7b6F330LvPoXefQr9ydX8fNrvsaN/JbfTKX5fHXasPfcx2nP/oj1M7z6E
+3v0HPaZ3H0Lv/oP+pmq+7vB77Ii35HZa7/fJYcfac5+iPfcn2sP07jvo3W/Q
+z67Gc7Dfc0f7JX8Uv98ziz9Ye+47tOd+Q3uLi/lqp9l+bxz+Sm6n13zfIOxY
+e+5LtOd+RHsPV+O7OOrb/JXcThP8/jrsJbfTQ35vHfaS2+mrfg8cdixe9y3i
+db8iXpzXY4w/vfsT+tHV/PSJ+rD2S26n5X4/HHasPfcd2nO/ob3Vxfy30/So
+F/NXcjud6PfDYS+5nX4W9Vr2kttpa78nDjsWr/sU8bo/Ee/h1Xqa4++JhL+S
+2+kWv68NO9ae+xjtuX/R3sZivbbTf0e9lT/Mn/sY/ty/8Ifp3ZfQux+h37Va
+r3v7PWi0X3I7LfV7wLBj7bkP0Z77D+1hevcd9O436OdV74P7Dnr3G/SY3n0H
+vfsN+tur9ey+g979Bj2mdx9B7/6B/tRq/b4S9WPjV3I7taNezF5yO/1D1HfZ
+S26nJ6Leyo7F6z5EvO4/xIvp3YfQu/+gH1K8b+00xvc9o33Mn/sO/txv8HdU
+9X7NjfoufyW305qo17Jj7bkv0Z77Ee3dVby/7TTA95PCX8nt9BXfdwl7ye10
+m3po2Etup/fj+wDsJbfTF9Vjwl5yO10Z51/2ktvpP2P/zl5yO11V7BdbFbfT
+nnGfzo6Np/sg4+n+x3hievc99O536DG9+xx69zf0y6p8476G3v0MPaZ3X0Pv
+foZ+9+p9Wx/fH8j7q2D+3Mfw5/6FP0zvvoTe/Qj9c9X76r6E3v0I/SeL962d
+LonvM4i35Hb6VHyfgb3kdnohvs/AjsXjPkY87l/Es6B6P7/j98nhD/PnPibv
+x4Lzfqx6n92n0Ls/oR9eva9T4vsM2i+5nZ6M7yewl9xOZ/j9btixeNzXiMf9
+jHiOqfLDmPg+Q86Pwfy5v+DPfQV/mF49O+8Pg/P+MJhefZVePZUe06vH0au/
+0a+o8s8v/T4j+of5U3/gT72Bv7eqfHVS3H/yh/lzXs35Ijjni+D87/9EPlPP
+mBmsnoHzv68RrJ7Brp6B89+fDlaPYFePmFnk13Ya7n4m+ldyO92nvhv2ktvp
+6KJe0sqsHrjtU29c8toHnXogzn+vLOJRrxCfegXeZ8EjF3zilL7J85dvWDJo
+8KvvZn+buobv8Oy8AankfpkP+cOdhzy529CKB2XOv2+O9tQ7tK/ege/87DNj
+frpqRH6+h4dlzt/fC716hufVM2ZWn2/01hO79TSz+vsU/n699fRmsPWEN591
+9juPjRyV49vy0k2vXbfbyMx3zbv0uQefH1NxR289as965N96xEdcc8OaVVeN
+y8/3cFdm65U/69Xz1ive6pf33nDbYRPy8z08PvOP3/7XxdeOnFTxxFSvN+1Z
+b/xbb/ioHV/45mXPT8nP93DH/wVjF9wyY/a0zANmbThw0VVTe60n7VlP/FtP
+2Hqht17YrRf821V9rp7+o0Zur4c78TT/9qLvf6p/s+LuzIteGnpu94mtijv6
+FxYsO2Xyv7Ur7ui936v27j9g46G75Pcbbx3zVfL4zNa7/lrv+me9Y+vdv09g
+vfv3/ax3PPJr253z9Nnb5H/P4Lp9tly3bM22Wb9q6qO/3eOczTNfc1SzfeJD
+22X9yjPv/PmYX4zM9hNmfvc/xvxiSOffF5z1+pLTjhmd9UcePPn5x4/pyvYz
+vtV65oZf7Zj5dy+mAT/5+visP/aNsw8ectyEbH/wiROOGXLc2MyvLFiyaOPx
+k7L+pO888euDTpiS7b/6xtrfH3TCxMz/HyAeUL0=
+         "]]}}],
+     MouseAppearanceTag["NetworkGraphics"]],
+    AllowKernelInitialization->False]],
+  DefaultBaseStyle->"NetworkGraphics",
+  FormatType->TraditionalForm,
+  FrameTicks->None]], "Output",
+ CellChangeTimes->{3.910611107139621*^9, 3.910611161707944*^9, 
+  3.910611200990612*^9, 3.910615701763023*^9, 3.910615761666625*^9, 
+  3.910617160793317*^9, 3.910617323730254*^9, 3.910617384726761*^9, 
+  3.9106175097221117`*^9, 3.91061760727417*^9, 3.910617749041565*^9, 
+  3.910617907681333*^9, 3.910618049287058*^9},
+ CellLabel->"Out[29]=",ExpressionUUID->"cff1f52b-d09d-42ed-bdef-d39a53a107fc"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"inputEngine", "//", "GearRatios"}]], "Input",
+ CellChangeTimes->{{3.9106111827910967`*^9, 3.910611205397497*^9}},
+ CellLabel->"In[30]:=",ExpressionUUID->"7045e858-b8cc-4b7b-ad92-bc82c781b58d"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+  "114573", ",", "112993", ",", "153216", ",", "418264", ",", "103368", ",", 
+   "107319", ",", "379324", ",", "536635", ",", "14592", ",", "424615", ",", 
+   "507848", ",", "939378", ",", "237600", ",", "869045", ",", "141382", ",", 
+   "31520", ",", "389298", ",", "629391", ",", "46980", ",", "178920", ",", 
+   "55242", ",", "25056", ",", "635034", ",", "290580", ",", "137280", ",", 
+   "119035", ",", "358479", ",", "2205", ",", "718200", ",", "92400", ",", 
+   "202982", ",", "42828", ",", "799", ",", "23999", ",", "162710", ",", 
+   "53836", ",", "45315", ",", "246402", ",", "197308", ",", "487200", ",", 
+   "35990", ",", "986049", ",", "77748", ",", "107648", ",", "123384", ",", 
+   "344915", ",", "60588", ",", "425130", ",", "172500", ",", "356310", ",", 
+   "77280", ",", "5883", ",", "4616", ",", "324919", ",", "292400", ",", 
+   "85600", ",", "28993", ",", "2688", ",", "697375", ",", "202880", ",", 
+   "296010", ",", "542100", ",", "346500", ",", "303804", ",", "1562", ",", 
+   "462429", ",", "744753", ",", "8372", ",", "136940", ",", "58146", ",", 
+   "864", ",", "19734", ",", "108052", ",", "27474", ",", "16192", ",", 
+   "44275", ",", "226754", ",", "7294", ",", "262416", ",", "536300", ",", 
+   "687051", ",", "165483", ",", "141246", ",", "323136", ",", "22200", ",", 
+   "309072", ",", "230510", ",", "266420", ",", "607948", ",", "238720", ",", 
+   "1209", ",", "376248", ",", "65817", ",", "114450", ",", "33110", ",", 
+   "44226", ",", "301760", ",", "492156", ",", "295974", ",", "39600", ",", 
+   "186258", ",", "35400", ",", "234150", ",", "585024", ",", "194691", ",", 
+   "72412", ",", "326915", ",", "13618", ",", "511875", ",", "467138", ",", 
+   "791700", ",", "265905", ",", "165240", ",", "506880", ",", "323818", ",", 
+   "74572", ",", "131077", ",", "56376", ",", "77760", ",", "56835", ",", 
+   "335685", ",", "269726", ",", "497140", ",", "137268", ",", "117572", ",", 
+   "529549", ",", "407790", ",", "78624", ",", "46336", ",", "771524", ",", 
+   "325464", ",", "155925", ",", "31200", ",", "593732", ",", "239280", ",", 
+   "30580", ",", "263980", ",", "585984", ",", "70252", ",", "64120", ",", 
+   "695273", ",", "81534", ",", "163280", ",", "334425", ",", "268593", ",", 
+   "95484", ",", "52438", ",", "36450", ",", "136644", ",", "12495", ",", 
+   "321685", ",", "370560", ",", "348234", ",", "60138", ",", "69048", ",", 
+   "5264", ",", "194500", ",", "132132", ",", "214676", ",", "930150", ",", 
+   "62237", ",", "591414", ",", "96240", ",", "121360", ",", "23301", ",", 
+   "140990", ",", "262484", ",", "27930", ",", "203442", ",", "98154", ",", 
+   "123228", ",", "385008", ",", "635520", ",", "59109", ",", "620312", ",", 
+   "94658", ",", "157320", ",", "95106", ",", "140010", ",", "215418", ",", 
+   "779520", ",", "82181", ",", "354626", ",", "359788", ",", "7920", ",", 
+   "290523", ",", "2828", ",", "390648", ",", "75780", ",", "117199", ",", 
+   "5652", ",", "14762", ",", "533540", ",", "879522", ",", "248325", ",", 
+   "586296", ",", "344470", ",", "223539", ",", "272720", ",", "225645", ",", 
+   "155511", ",", "54510", ",", "99981", ",", "436896", ",", "44255", ",", 
+   "507952", ",", "725696", ",", "355623", ",", "893730", ",", "335465", ",", 
+   "41904", ",", "141332", ",", "105984", ",", "573678", ",", "267804", ",", 
+   "830320", ",", "37696", ",", "287280", ",", "543361", ",", "8944", ",", 
+   "211575", ",", "722638", ",", "50260", ",", "168516", ",", "835347", ",", 
+   "321763", ",", "646000", ",", "853432", ",", "78624", ",", "669390", ",", 
+   "228900", ",", "327651", ",", "20470", ",", "258390", ",", "133892", ",", 
+   "163014", ",", "368510", ",", "244800", ",", "452226", ",", "266250", ",", 
+   "553220", ",", "42616", ",", "89344", ",", "520047", ",", "86154", ",", 
+   "767457", ",", "347260", ",", "268640", ",", "557004", ",", "270720", ",", 
+   "167856", ",", "805", ",", "309650", ",", "417720", ",", "165132", ",", 
+   "315900", ",", "310415", ",", "82350", ",", "441780", ",", "366230", ",", 
+   "356265", ",", "352944", ",", "153679", ",", "879588", ",", "10114", ",", 
+   "246912", ",", "204315", ",", "90240", ",", "663060", ",", "558", ",", 
+   "66132", ",", "443700", ",", "246759", ",", "163928", ",", "161910", ",", 
+   "140608", ",", "174966", ",", "26622", ",", "189663", ",", "15072", ",", 
+   "64460", ",", "22950", ",", "145921", ",", "90168", ",", "459277", ",", 
+   "351372", ",", "22605", ",", "322328", ",", "325926", ",", "224406", ",", 
+   "86994", ",", "1282", ",", "313760", ",", "558279", ",", "273132", ",", 
+   "88995", ",", "280014", ",", "214061", ",", "22473", ",", "244278", ",", 
+   "59280", ",", "161850", ",", "35154", ",", "689724", ",", "274628", ",", 
+   "658176", ",", "94248", ",", "42529", ",", "244188", ",", "236800", ",", 
+   "131588", ",", "186214", ",", "424200", ",", "11676", ",", "206468", ",", 
+   "85436", ",", "458658", ",", "39693", ",", "818380", ",", "591364", ",", 
+   "29202", ",", "271566", ",", "32760", ",", "155574", ",", "24288", ",", 
+   "318756", ",", "12276", ",", "545616", ",", "95125", ",", "920178", ",", 
+   "604800", ",", "508980", ",", "558297", ",", "315840", ",", "859142"}], 
+  "}"}]], "Output",
+ CellChangeTimes->{{3.910611192514646*^9, 3.910611206506133*^9}, 
+   3.9106157019867477`*^9, 3.910615761808455*^9, 3.910617207426976*^9, 
+   3.910617325147128*^9, 3.9106173862436943`*^9, 3.910617609390925*^9, 
+   3.910617753994967*^9, 3.910617907804357*^9, 3.910618049374772*^9},
+ CellLabel->"Out[30]=",ExpressionUUID->"6e144e4f-e71b-4a08-a45a-31dfbb47dab7"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"inputEngine", "//", "GearRatios"}], "//", "Total"}]], "Input",
+ CellChangeTimes->{{3.910611210609933*^9, 3.910611216425803*^9}},
+ CellLabel->"In[31]:=",ExpressionUUID->"33c5f7c9-1203-4436-933c-43c18686e60c"],
+
+Cell[BoxData["87605697"], "Output",
+ CellChangeTimes->{3.9106112166980886`*^9, 3.9106157020463123`*^9, 
+  3.9106157618484297`*^9, 3.910617210751742*^9, 3.9106173270351553`*^9, 
+  3.910617388071887*^9, 3.9106176106170197`*^9, 3.910617755509246*^9, 
+  3.910617907826383*^9, 3.910618049421493*^9},
+ CellLabel->"Out[31]=",ExpressionUUID->"4b62ded1-1a89-4e80-b6bb-11417e013253"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{1148.25, 1232.25},
+WindowMargins->{{Automatic, 0}, {Automatic, 0}},
+FrontEndVersion->"13.3 for Linux x86 (64-bit) (July 24, 2023)",
+StyleDefinitions->"Default.nb",
+ExpressionUUID->"de9c3394-911c-41c7-b5cb-85af1405682c"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 210, 4, 98, "Title",ExpressionUUID->"6dccc01c-a83d-4134-90c6-ac4427a103a5"],
+Cell[CellGroupData[{
+Cell[815, 30, 246, 4, 69, "Chapter",ExpressionUUID->"c0913806-a5fa-4455-9c0c-918ff01325ba"],
+Cell[CellGroupData[{
+Cell[1086, 38, 248, 4, 29, "Input",ExpressionUUID->"7aaeb906-6cd3-488f-b768-8ce106d6f3b2"],
+Cell[1337, 44, 346, 4, 33, "Output",ExpressionUUID->"5992d270-f72f-48d1-85d3-5074984e8082"]
+}, Open  ]],
+Cell[1698, 51, 438, 9, 214, "Input",ExpressionUUID->"2297da38-69b1-42fd-bd84-d2d64c44badf"],
+Cell[2139, 62, 431, 9, 29, "Input",ExpressionUUID->"4b50a6d2-e075-4ea0-9dbd-35c469214eca"],
+Cell[CellGroupData[{
+Cell[2595, 75, 209, 3, 29, "Input",ExpressionUUID->"dd1128a9-7eb8-4c33-9a00-d7c5a454194b"],
+Cell[2807, 80, 339, 5, 33, "Output",ExpressionUUID->"a0975640-bc71-4fda-89a8-709c71997965"]
+}, Open  ]],
+Cell[3161, 88, 427, 8, 35, "Text",ExpressionUUID->"f4db9d9c-8f2c-48f2-8401-0fced2cc3d6f"],
+Cell[3591, 98, 1639, 40, 76, "Input",ExpressionUUID->"3eab24cb-25c1-4ddd-ac1c-ecda696be5f8"],
+Cell[CellGroupData[{
+Cell[5255, 142, 331, 7, 29, "Input",ExpressionUUID->"cfc81ec3-2a7a-4ec8-9d77-6304a884a31e"],
+Cell[5589, 151, 658, 17, 46, "Output",ExpressionUUID->"09b8f15f-3ec1-48b6-8448-d0aecc4084c3"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[6284, 173, 151, 3, 67, "Section",ExpressionUUID->"21f2fc5a-7604-4c52-871e-a5cda35999af"],
+Cell[6438, 178, 326, 7, 35, "Text",ExpressionUUID->"62970d4a-8eea-4ac1-9970-e8bfa5b0fe21"],
+Cell[CellGroupData[{
+Cell[6789, 189, 1005, 24, 110, "Input",ExpressionUUID->"de8357c8-09cc-41dc-90f5-1189d55ba7c6"],
+Cell[7797, 215, 4629, 149, 290, "Output",ExpressionUUID->"9ce70299-b67f-4494-9869-66e210a3cea3"]
+}, Open  ]],
+Cell[12441, 367, 858, 23, 29, "Input",ExpressionUUID->"454227bb-ac76-433b-b408-c9391c602065"],
+Cell[13302, 392, 1937, 42, 116, "Input",ExpressionUUID->"017deca9-714e-494d-9fef-8e2a42909f79"],
+Cell[CellGroupData[{
+Cell[15264, 438, 271, 4, 29, "Input",ExpressionUUID->"3f2f69bc-210d-4dcb-ae43-2a20ff9f8db6"],
+Cell[15538, 444, 4740, 150, 290, "Output",ExpressionUUID->"60b9a750-c8b1-41c2-9240-d7558fade80f"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[20315, 599, 1805, 43, 130, "Input",ExpressionUUID->"65baf82e-fb88-465d-9dfb-9d8a174b93f3"],
+Cell[22123, 644, 4896, 152, 290, "Output",ExpressionUUID->"a274c304-6887-4693-9a77-a47dd64f98f5"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[27056, 801, 1708, 44, 130, "Input",ExpressionUUID->"ce7716ff-03df-4870-ad42-1ffb6871b267"],
+Cell[28767, 847, 745, 12, 33, "Output",ExpressionUUID->"1570f6b1-0c1e-4471-86b3-90803c9ad078"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[29549, 864, 351, 8, 29, "Input",ExpressionUUID->"1cbe5e53-a9d8-4440-b39a-3024b93fc7db"],
+Cell[29903, 874, 386, 5, 33, "Output",ExpressionUUID->"ad0f09fd-8e96-4ea6-b755-341f6d684837"]
+}, Open  ]],
+Cell[30304, 882, 238, 4, 35, "Text",ExpressionUUID->"43d5b355-79b2-437a-9b59-ba389ec0baae"],
+Cell[CellGroupData[{
+Cell[30567, 890, 409, 9, 29, "Input",ExpressionUUID->"75e195c2-a318-424e-bada-c7a4fc605f9d"],
+Cell[30979, 901, 368, 5, 33, "Output",ExpressionUUID->"c7599e0d-a97a-46de-884c-d4efc11e0e58"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[31396, 912, 151, 3, 67, "Section",ExpressionUUID->"3a9e5fc4-8932-422a-8475-8d0acc427caa"],
+Cell[CellGroupData[{
+Cell[31572, 919, 1674, 45, 119, "Input",ExpressionUUID->"b3e2e3ef-ae6b-4974-92aa-dda24a10f59b"],
+Cell[33249, 966, 510, 12, 57, "Output",ExpressionUUID->"0b494dea-3182-4efc-9577-b9bca322a1ee"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[33796, 983, 5817, 135, 314, "Input",ExpressionUUID->"a3dcf0dd-0a8e-4a46-be96-3359a28835ca"],
+Cell[39616, 1120, 131, 3, 23, "Echo",ExpressionUUID->"ec1a2ca5-f65b-4299-b3be-6553ec84309f"],
+Cell[39750, 1125, 6400, 117, 413, "Output",ExpressionUUID->"5a178ac9-0784-4d1a-ae13-c324b09d53b0"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[46187, 1247, 514, 9, 29, "Input",ExpressionUUID->"3b86b7f7-9e87-45cc-bd5b-271e48029fb5"],
+Cell[46704, 1258, 4731, 85, 413, "Output",ExpressionUUID->"adf3b539-c5c3-48bf-85b6-936eabc7199a"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[51472, 1348, 211, 3, 29, "Input",ExpressionUUID->"dc1277cb-8192-464a-9345-17a64bbb77b2"],
+Cell[51686, 1353, 1397, 43, 57, "Output",ExpressionUUID->"e093c15a-0edd-49f1-94f6-e5463286d21a"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[53120, 1401, 987, 25, 110, "Input",ExpressionUUID->"cd2c882c-147c-4068-ac51-11a9b8294a9f"],
+Cell[54110, 1428, 471, 6, 33, "Output",ExpressionUUID->"e447ab25-814f-4945-bab4-94f2cbab1885"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[54618, 1439, 362, 7, 29, "Input",ExpressionUUID->"d31cf825-5c78-454a-a24d-5523aae23f60"],
+Cell[54983, 1448, 133, 3, 23, "Echo",ExpressionUUID->"bf2c9360-5ff0-403b-9a3e-73bd193ce0c6"],
+Cell[55119, 1453, 117071, 2225, 385, "Output",ExpressionUUID->"cff1f52b-d09d-42ed-bdef-d39a53a107fc"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[172227, 3683, 216, 3, 29, "Input",ExpressionUUID->"7045e858-b8cc-4b7b-ad92-bc82c781b58d"],
+Cell[172446, 3688, 5574, 75, 434, "Output",ExpressionUUID->"6e144e4f-e71b-4a08-a45a-31dfbb47dab7"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[178057, 3768, 242, 4, 29, "Input",ExpressionUUID->"33c5f7c9-1203-4436-933c-43c18686e60c"],
+Cell[178302, 3774, 373, 5, 55, "Output",ExpressionUUID->"4b62ded1-1a89-4e80-b6bb-11417e013253"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+
